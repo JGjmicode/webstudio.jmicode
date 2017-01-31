@@ -1,0 +1,236 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 20.07.2016, 20:57:40
+    Author     : jonick
+*/
+
+.header {
+    
+    background-color: #ddd;
+    color: black;
+    margin-bottom: 20px;        
+    min-height: 40px;
+}
+.footer {
+    height: 120px;
+    background-color: #ddd;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+    margin-top: 25px;
+}
+.container{
+    width: 960px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 0 auto;
+    position: relative;
+}
+.main-nav {
+    font-size: 16px;
+    float: left;
+    min-height: 60px;
+    width: 700px;
+
+}
+.main-nav a {
+    color: black;
+    display: block;
+    padding: 20px 20px;
+    text-decoration: none;
+}
+.main-nav a:hover {
+    background-color: #5a5a5a;
+    color: white;
+}
+.main-nav ul {
+    font-size: 0px;
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+.main-nav li {
+    font-size: 16px;
+    line-height: 20px;
+    display: inline-block;
+    vertical-align: top;
+}
+.login {
+    padding-top: 15px;
+    padding-bottom: 10px;
+    font-size: 16px;
+    float: right;
+    min-height: 60px;
+    max-width: 80px;    
+}
+.btn-login {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    padding: 20px 20px;
+    padding-left: 40px;
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+}
+.btn-login:hover {
+    background-color: antiquewhite;
+}
+.main-logo {
+    float: left;
+    padding: 20px 20px;
+}
+.hide {
+    display: none;
+}
+label {
+    font-weight: 400;
+}
+time { 
+    font-size: 10px;
+    font-weight: 600;
+    background-color: #eeeeee;
+}
+.btn-right {
+    margin-right: 10px;
+    float: right;
+}
+.tbl-colored {
+    background-color: #f9f9f9;
+}
+.h-title {
+    text-align: center;
+    padding-bottom: 20px;
+}
+.popup-input-window {
+    position: absolute;
+    width: 400px;
+    height: 220px;
+    top: 150px;
+    left: 280px;
+    z-index: 99;
+    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7);
+    display: none;
+
+}
+.panel-body button {
+    margin-right: 0px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+.overlay {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 90;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+.modal-content-show {
+    display: block;
+}
+#dog {    
+    width: 25%;
+    display: inline;
+}
+[name=date_dog] {
+    width: 67%;
+    display: inline;
+}
+.tiket-avatar {
+    width: 20px;
+    height: 20px;
+}
+.table-zakaz {
+    font-size: 12px;
+}
+.table-files {
+    width: 100%;
+}
+.table-files th {
+    border-bottom: 1px solid grey;
+}
+.table-files tr:hover {
+    background: #ddd;
+}
+
+.tiket-user {    
+    text-align: center;
+}
+.tiket-empty {
+    width: 100%;
+}
+.popup-area [name=text]{
+    width: 100%;
+    height: 100px;    
+}
+.rest-red {
+    color: red;
+}
+.popup-tiket [name=text] {
+    width: 100%;
+}
+.toolbar {
+    margin-bottom: 10px;
+}
+.empty-new {
+    width: 33%;
+}
+.empty-new label {
+    padding-top: 10px;
+}
+.files-panel-box {    
+    margin-top: 15px;
+}
+.files-panel {
+    cursor: pointer;
+}
+.files-body {
+    display: none;
+}
+.files-body-show {
+    display: block;
+}
+.h-projects {
+    display: inline;
+}
+.h-projects + a {
+    display: block;
+    float: right;    
+}
+.h-projects + a + div {
+    margin-top: 10px;
+}
+.login-block {
+    padding-left: 10px; 
+    width: 41%;
+    padding-top: 15px;
+    background-color: #ddd;
+    box-shadow: 10px 10px 10px #eeeeee;
+}
+.register-btn {
+    display: block;
+    float: left;
+    margin-top: -25px;
+    margin-bottom: 50px;
+}
+.avatar-image {
+    padding: 5px;    
+}
+.avatar-image:hover {
+    
+    transform: scale(1.2);
+}
+.avatar-image--active {
+    border: 3px solid #c7ddef;
+}
+.avatar-field {
+    display: none;
+}
+
+
