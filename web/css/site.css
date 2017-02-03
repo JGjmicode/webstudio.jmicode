@@ -89,3 +89,18 @@ a.desc:after {
     padding: 10px 20px;
     margin: 0 0 15px 0;
 }
+.label-left{
+    //text-align: -webkit-right;
+    //padding-top: 10px;
+}
+.label-left{
+    /* width: 120px; */
+   // float: left;
+}
+.input-left{
+   // float: left;
+}
+.form-border{
+    border-top: 1px solid #ddd;
+    padding: 8px;
+}

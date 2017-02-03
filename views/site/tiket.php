@@ -11,16 +11,18 @@
     $active;
     $chat;
     $user;
-    
+    file_put_contents('data.txt', var_export($data, true));
     foreach ($data as $val):
         $user_id = $val->user_id;
         $zakazId = $val->zakaz_id;
         $taskName = $val->task_name;
         $taskDes = $val->task_des;
         $dateAdd = $val->date_add;
+        $dateClose = $val->date_close;
         $active = $val->active;
         $chat = $val->tchat;
         $user = $val->users;
+        $tiketId = $val->id;
     endforeach;
 
 ?>
@@ -28,6 +30,11 @@
 
 <div class="container">
           <h4><?= yii\helpers\Html::a("Вернуться к проекту", \yii\helpers\Url::to(["site/ezakaz", "id"=>$zakazId]), ["class"=>"label label-default"]) ?></h4>
+            <?php
+                if(!$active){
+                    echo '<h4>Тикет закрыт '.DateTime::createFromFormat("Y-m-d", $dateClose)->format("d-m-Y").'</h4>';
+                }
+            ?>
           <div class="tiket-user col-md-2">
             <?= "<img src='".$user["avatar"]."' width=48 height=48></img><br>" ?>
             <?= $user["name"]; ?>
@@ -65,11 +72,12 @@
             </div>
               <div class="col-md-3 tiket-empty"></div>
           <?php endforeach; ?>
+              <?php if($active){?>
               <div class="col-md-12">
-                  <?= yii\helpers\Html::button("Закрыть тикет", ["class" => "btn btn-success btn-right"]) ?>
+                  <?= Html::a("Закрыть тикет", \yii\helpers\Url::to(["site/close-tiket", 'id' => $tiketId]), ["class" => "btn btn-success btn-right"])?>
                   <?= yii\helpers\Html::button("Добавить запись", ["id"=>"btn-new",  "class" => "btn btn-default btn-right"]) ?>                  
               </div>
-
+              <?php }?>
     <div class="popup-input-window">
         <div class="panel panel-default">
         <div class="panel-heading">

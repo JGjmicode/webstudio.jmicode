@@ -5,7 +5,8 @@
     use yii\widgets\Pjax;
 ?>
 <div class="container">
-    <?php 
+
+    <?php
         $id;
         $clientid;
         $projectName;
@@ -49,6 +50,7 @@
                 else
                     echo "<span class='label label-default'>Закрыт</span>";
             ?> </p>
+       <!--
         <table class="table">
             <tr>
                 <td><label for="projectName">Наименование</label></td>
@@ -107,15 +109,80 @@
                 </td>
 
         </table>
-         
+         -->
+        <?php $form = ActiveForm::begin([
+            'id' => 'form-zakaz',
+            'fieldConfig' => [
+                'template' => '<div class="clearfix form-border"><div class="col-md-3">{label}</div><div class="col-md-9">{input}</div></div>',
+                'labelOptions' => [],
+            ],
+        ]); ?>
+        <?php echo $form->field($model, 'projectname')?>
+        <div class="clearfix form-border">
+            <div class="col-md-4">
+                Заказчик
+            </div>
+            <div class="col-md-8">
+                <?= yii\helpers\Html::a($clientName, yii\helpers\Url::to(["site/eklient", "id"=>$klientid])); ?>
+            </div>
+        </div>
+        <?= $form->field($model, 'date_start')->widget(DatePicker::classname(), [
+            'type' => DatePicker::TYPE_COMPONENT_APPEND,
+            'language' => 'ru',
+            'pluginOptions' => [
+                'autoclose'=>true,
+                'format' => 'yyyy-mm-dd',
+                'todayHighlight' => true
+            ]
+        ])
+        ?>
+        <?= $form->field($model, 'dead_line')->widget(DatePicker::classname(), [
+            'type' => DatePicker::TYPE_COMPONENT_APPEND,
+            'language' => 'ru',
+            'pluginOptions' => [
+                'autoclose'=>true,
+                'format' => 'yyyy-mm-dd',
+                'todayHighlight' => true
+            ]
+        ])
+        ?>
+        <?php echo $form->field($model, 'sum')?>
+
+        <div class="clearfix form-border">
+            <div class="col-md-3">
+                Договор
+            </div>
+            <div class="col-md-9">
+                <?= yii\helpers\Html::textInput('Zakaz[n_dog]', $model->n_dog, ["id"=>"dog", "class" =>"form-control"]); ?>
+                от
+                <?= DatePicker::widget([
+                    'name' => 'Zakaz[date_dog]',
+                    'type' => DatePicker::TYPE_INPUT,
+                    'value' => $model->date_dog,
+                    'language' => 'ru',
+                    'pluginOptions' => [
+                        'autoclose'=>true,
+                        'format' => 'yyyy-mm-dd',
+                        'todayHighlight' => true
+                    ]
+                ]); ?>
+            </div>
+        </div>
+        <?php echo $form->field($model, 'prim')?>
+
+        <?php ActiveForm::end();?>
+
     </div>
     <div class="col-md-6">
           <h4><a href="#">Тикеты <span class="badge"><?= $tiketsCount ?></span></a></h4>          
           <div class="list-group">
             <?php
                 foreach ($tikets as $val):
+                    if(!$val->active){
+                       $tiketClose =  "<img class='tiket-avatar' src='/img/done.png'></img> <time>".date_format(DateTime::createFromFormat("Y-m-d", $val->date_close), "d-m-Y")."</time>";
+                    }else $tiketClose = '';
                     echo Html::a("<img class='tiket-avatar' src='".app\models\User::findIdentity($val->user_id)['avatar']."'></img> "
-                            .$val->task_name." <time>".date_format(DateTime::createFromFormat("Y-m-d", $val->date_add), "d-m-Y")."</time>", 
+                            .$val->task_name." <time>".date_format(DateTime::createFromFormat("Y-m-d", $val->date_add), "d-m-Y")."</time>".$tiketClose,
                             \yii\helpers\Url::to(["site/tiket", "id"=>$val->id]), ["class"=>'list-group-item']);                    
                 endforeach;              
             ?>
@@ -124,7 +191,7 @@
     
     <div class="col-md-12">
         <?= Html::button('Выполнено', ["class" => "btn btn-success btn-right"]) ?>
-        <?= Html::button('Сохранить', ["class" => "btn btn-default btn-right"]) ?>         
+        <?= Html::submitButton('Сохранить', ["class" => "btn btn-default btn-right", "form" => "form-zakaz"]) ?>
         <?= Html::button('Добавить тикет', ["id" => "add-tiket", "class" => "btn btn-default btn-right"]) ?>        
     </div>
     
@@ -185,10 +252,10 @@
         <div>Остаток: <span class="rest"><?= $ss ?></span> руб.</div>
         <?= Html::button('Оплата', ["id"=>"btn-pay", "class" => "btn btn-default btn-right"]) ?> 
     </div>
-    <div class="col-md-12">
-        <p><label for="prim"><b>Примечание</b></label><?= yii\helpers\Html::textInput("klient", $prim, ["id" => "prim", "class" =>"form-control"]); ?></p>
+    <!--<div class="col-md-12">
+        <p><label for="prim"><b>Примечание</b></label><?= yii\helpers\Html::textInput('Zakaz[prim]', $prim, ["id" => "prim", "class" =>"form-control"]); ?></p>
     </div>
-    
+    -->
     <div class="popup-input-window popup-pay">
         <div class="panel panel-default">
         <div class="panel-heading">

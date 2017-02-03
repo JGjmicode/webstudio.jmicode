@@ -126,11 +126,20 @@ class Zakaz extends \yii\db\ActiveRecord {
             "id" => "id",
             
             "klient_id" => "klient_id",
-            "projectname" => "projectname",
-            "date_start" => "date_start",
+            "projectname" => "Наименование",
+            "date_start" => "Дата начала",
             "date_end" => "date_end",
-            "dead_line" => "dead_line",
-            "prim" => "prim",
+            "dead_line" => "Дэдлайн",
+            "prim" => "Примечание",
+            'sum' => 'Стоимость, руб.'
         );
+    }
+
+    public function rules()
+    {
+        return [[['projectname'], 'required'],
+            [['date_start', 'dead_line', 'sum', 'prim', 'n_dog', 'date_dog'], 'default']
+
+        ];
     }
 }

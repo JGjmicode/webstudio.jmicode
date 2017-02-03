@@ -27,7 +27,18 @@ class Tiket extends \yii\db\ActiveRecord{
     
    function getTiket($id) {
         return Tiket::find()->joinWith("users")->joinWith("tchat")->where("tiket.id=".$id)->all();
-    }  
+    }
+
+    public static function closeTiket($id){
+        $tiket = self::findOne($id);
+        $tiket->active = false;
+        $tiket->date_close = date("Y-m-d");
+        if($tiket->save()){
+            return $tiket->zakaz_id;
+        }else{
+            return false;
+        }
+    }
     
    
 }

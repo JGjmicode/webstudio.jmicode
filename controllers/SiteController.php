@@ -14,7 +14,7 @@ use app\models\Klient;
 use app\models\Tiket;
 use app\controllers\BehaviorsController;
 use yii\web\UploadedFile;
-
+use yii\helpers\Url;
 class SiteController extends BehaviorsController
 {
 //    public function behaviors()
@@ -153,7 +153,8 @@ class SiteController extends BehaviorsController
     public function actionEzakaz() {        
         $id = Yii::$app->request->get("id");        
         $model = new Zakaz;
-        
+        $zakaz = Zakaz::findOne($id);
+
         if (Yii::$app->request->post("sum")) {
             $sum = Yii::$app->request->post("sum");
             $date = Yii::$app->request->post("date_pay");
@@ -171,9 +172,15 @@ class SiteController extends BehaviorsController
             $model->uploadFiles($file, $desc, $id);
         }
         
-        $data = $model->getZakaz($id);                
+        $data = $model->getZakaz($id);
+
+        if($zakaz->load(Yii::$app->request->post()) && $zakaz->save()){
+            file_put_contents('zakaz.txt', var_export($zakaz, true));
+            file_put_contents('post.txt', var_export(Yii::$app->request->post(), true));
+            return $this->render("ezakaz", ["data" => $data, "ss" => 0, 'model' => $zakaz]);
+        }
         
-            return $this->render("ezakaz", ["data" => $data, "ss" => 0]);                                
+            return $this->render("ezakaz", ["data" => $data, "ss" => 0, 'model' => $zakaz]);
     }
     public function actionEklient() {         
         $id = Yii::$app->request->get("id");        
@@ -221,5 +228,19 @@ class SiteController extends BehaviorsController
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    public function setUniqueId($uniqueId)
+    {
+        $this->uniqueId = $uniqueId;
+    }
+
+    public function actionCloseTiket(){
+        if($id = Yii::$app->request->get('id')){
+           $zakazId = Tiket::closeTiket($id);
+            if($zakazId){
+                return $this->redirect(Url::to(['/site/ezakaz', 'id' => $zakazId]));
+            }
+        }
     }
 }
