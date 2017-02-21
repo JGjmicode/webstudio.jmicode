@@ -17,28 +17,6 @@ use yii\web\UploadedFile;
 use yii\helpers\Url;
 class SiteController extends BehaviorsController
 {
-//    public function behaviors()
-//    {
-//        return [
-//            'access' => [
-//                'class' => AccessControl::className(),
-//                'only' => ['logout'],
-//                'rules' => [
-//                    [
-//                        'actions' => ['logout'],
-//                        'allow' => true,
-//                        'roles' => ['@'],
-//                    ],
-//                ],
-//            ],
-//            'verbs' => [
-//                'class' => VerbFilter::className(),
-//                'actions' => [
-//                    'logout' => ['post'],
-//                ],
-//            ],
-//        ];
-//    }
 
     public function actions()            
     {
@@ -175,8 +153,6 @@ class SiteController extends BehaviorsController
         $data = $model->getZakaz($id);
 
         if($zakaz->load(Yii::$app->request->post()) && $zakaz->save()){
-            file_put_contents('zakaz.txt', var_export($zakaz, true));
-            file_put_contents('post.txt', var_export(Yii::$app->request->post(), true));
             return $this->render("ezakaz", ["data" => $data, "ss" => 0, 'model' => $zakaz]);
         }
         
@@ -235,12 +211,5 @@ class SiteController extends BehaviorsController
         $this->uniqueId = $uniqueId;
     }
 
-    public function actionCloseTiket(){
-        if($id = Yii::$app->request->get('id')){
-           $zakazId = Tiket::closeTiket($id);
-            if($zakazId){
-                return $this->redirect(Url::to(['/site/ezakaz', 'id' => $zakazId]));
-            }
-        }
-    }
+    
 }

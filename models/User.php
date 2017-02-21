@@ -44,7 +44,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function getId()
     {
         return $this->id;
-    } 
+    }
+
     public function getAvatar($id) {
         return $this->avatar;
     }
@@ -57,7 +58,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->getAuthKey() === $authKey;
-    }    
-    
-    
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
 }

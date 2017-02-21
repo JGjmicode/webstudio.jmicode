@@ -30,8 +30,9 @@ AppAsset::register($this);
             ?>
           <nav class="main-nav">
             <ul>
-                <li><?= Html::a("Проекты", yii\helpers\Url::toRoute("site/zakaz")); ?></li>
+                <li><?= Html::a("Проекты", yii\helpers\Url::toRoute("projects/index")); ?></li>
                 <li><?= Html::a("Клиенты", yii\helpers\Url::toRoute("site/klient")); ?></li>
+                <li><?= Html::a("Задачи", yii\helpers\Url::toRoute("tikets/index")); ?></li>
                 <li><?= Html::a("Профиль", yii\helpers\Url::toRoute("site/userprofile")); ?></li>
             </ul>
           </nav>
@@ -62,12 +63,14 @@ AppAsset::register($this);
     
     <?php $this->beginBody() ?>
 
+    <div class="container">
             <?= $content ?>
-    
+    </div>
+
 
 <footer class="footer">
     <div class="container">
-        <p><img src="img/jmilogo.png" width=80px height=60px></p>
+        <p><img src="/img/jmilogo.png" width=80px height=60px></p>
         <p class="pull-left">&copy; JMI <?= date('Y') ?></p>
 
         <p class="pull-right"><?= Yii::powered() ?></p>

@@ -1,8 +1,10 @@
 <?php
 
 namespace app\models;
-
+use Yii;
 class Tiket extends \yii\db\ActiveRecord{
+
+    const STATUS_ACTIVE = 1;
     
     public function getTchat() {
         return $this->hasMany(Tchat::className(), ["tiket_id"=>"id"]);
@@ -10,6 +12,18 @@ class Tiket extends \yii\db\ActiveRecord{
     
     public function getUsers() {
         return $this->hasOne(Users::className(), ["id"=>"user_id"]);
+    }
+
+    public function getPerformer(){
+        return $this->hasOne(Users::className(), ['id' => 'performer_id']);
+    }
+
+    public function getPriority(){
+        return $this->hasOne(Priority::className(), ['id' => 'priority_id']);
+    }
+
+    public function getZakaz(){
+        return $this->hasOne(Zakaz::className(),['id' => 'zakaz_id']);
     }
             
     public function setTiketText($text, $id){
@@ -28,7 +42,15 @@ class Tiket extends \yii\db\ActiveRecord{
    function getTiket($id) {
         return Tiket::find()->joinWith("users")->joinWith("tchat")->where("tiket.id=".$id)->all();
     }
+    
+    public function saveTiket($id){
+        $this->date_add = date("Y-m-d");
+        $this->user_id = Yii::$app->user->getId();
+        $this->zakaz_id = $id;
+        $this->save();
 
+    }
+    
     public static function closeTiket($id){
         $tiket = self::findOne($id);
         $tiket->active = false;
@@ -39,6 +61,27 @@ class Tiket extends \yii\db\ActiveRecord{
             return false;
         }
     }
+
+    public function rules()    {
+        return [
+            [['task_name', 'task_des'], 'required'],
+            [['priority_id', 'performer_id', 'dead_line'], 'default'],
+        ];
+    }
     
-   
+    public function attributeLabels()    {
+        return [
+            'task_name' => 'Заголовок',
+            'task_des' => 'Описание',
+            'priority_id' => 'Приоритет',
+            'performer_id' => 'Исполнитель',
+            'performer.name' => 'Исполнитель',
+            'users.name' => 'Кем создана',
+            'dead_line' => 'Крайний срок',
+            'date_close' => 'Исполнение',
+            'date_add' => 'Создана',
+        ];
+    }
+
+
 }

@@ -8,11 +8,11 @@ use yii\widgets\ActiveForm;
     <h4> Редактирование профиля </h4>
     <?php
         $userIdentity = Yii::$app->user->identity;                
-        $avatarFiles = FileHelper::findFiles('img/avatar/', ['only' =>['*.png', '*.gif']]);        
+        $avatarFiles = FileHelper::findFiles('img/avatar/', ['only' =>['*.png', '*.gif']]);
     ?>
     <?php ActiveForm::begin(); ?>
     <div calss='avatar'>
-        <img class='user-avatar' name='avatar' src='<?= $userIdentity['avatar'] ?>' width='64' height='64'></img>
+        <img class='user-avatar' name='avatar' src='/<?= $userIdentity['avatar'] ?>' width='64' height='64'></img>
         <?= Html::input('text', 'avatar-field', $userIdentity['avatar'], ['class' => 'avatar-field']); ?>
     </div>
     <div class='user-account'>
@@ -29,7 +29,7 @@ use yii\widgets\ActiveForm;
             foreach ($avatarFiles as $file) {
                 if ($file == "img/avatar/no_avatar.png") continue;
                 //if ($file == $userIdentity['avatar'])                    
-                echo "<img class='avatar-image' src='".$file."' width=64 geight=64></img>";
+                echo "<img class='avatar-image' src='/".$file."' width=64 geight=64></img>";
             }
         ?>
     </div>

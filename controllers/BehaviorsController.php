@@ -4,6 +4,21 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 
 class BehaviorsController extends Controller{
+
+    public function actions()
+    {
+        $this->layout = "wpLayout";
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
+        ];
+    }
+
     public function behaviors() {
         return [
             'access' =>[

@@ -4,18 +4,18 @@ namespace app\models;
 class Zakaz extends \yii\db\ActiveRecord {
     
     
-    public static function model($className=__CLASS__){
+    /*public static function model($className=__CLASS__){
         return parent::model($className);
     }
-    
+
     public static function tableName() {
         return "zakaz";
     }
-    
+
     public static function primaryKey() {
         return array("id");
     }
-
+    */
     public function uploadFiles($file, $desc, $id) {
         $filePath = 'upload/';
         $date = strtotime('now');
@@ -44,7 +44,7 @@ class Zakaz extends \yii\db\ActiveRecord {
                 )->execute();                        
     }
     
-    public function setTiket($title, $text, $id) {
+    /*public function setTiket($title, $text, $id) {
         $userId = \Yii::$app->user->getId();
         \Yii::$app->db->createCommand()->insert(
                 "tiket",
@@ -57,7 +57,7 @@ class Zakaz extends \yii\db\ActiveRecord {
                 ]
                 )->execute();
     }
-    
+    */
     public function setNewZakaz($params) {
         if ($params['date-start'] == "")
             $date1 = null;
@@ -94,7 +94,7 @@ class Zakaz extends \yii\db\ActiveRecord {
     public function getTiket() {
         return $this->hasMany(Tiket::className(), ["zakaz_id" => "id"]);
     }
-    
+
     public function getOplata() {
         return $this->hasMany(Oplata::className(), ["zakaz_id" => "id"]);
     }
@@ -103,7 +103,7 @@ class Zakaz extends \yii\db\ActiveRecord {
         return $this->hasMany(Zakazfiles::className(), ["zakaz_id" => "id"]);
     }
 
-    function getTab1() {
+    /*function getTab1() {
         return Zakaz::find()->joinWith("klient")->joinWith("tiket")->all();
     }
     
@@ -119,7 +119,7 @@ class Zakaz extends \yii\db\ActiveRecord {
                 ->where("status=0");
         return $query->all();
     }
-    
+    */
     public function attributeLabels() {
         
         return array(
@@ -128,7 +128,7 @@ class Zakaz extends \yii\db\ActiveRecord {
             "klient_id" => "klient_id",
             "projectname" => "Наименование",
             "date_start" => "Дата начала",
-            "date_end" => "date_end",
+            "date_end" => "Дата закрытия",
             "dead_line" => "Дэдлайн",
             "prim" => "Примечание",
             'sum' => 'Стоимость, руб.'

@@ -8,6 +8,10 @@ $config = [
     'bootstrap' => ['log'],
     'defaultRoute' => '/site/index',
     'components' => [
+        'urlManager' => [
+            'showScriptName' => false,
+            'enablePrettyUrl' => true,
+        ],
         'request' => [
 
             'cookieValidationKey' => '55544666444',
@@ -56,11 +60,13 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
+        'allowedIPs' => ['10.20.1.13']
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
+        'allowedIPs' => ['10.20.1.13']
     ];
 }
 
