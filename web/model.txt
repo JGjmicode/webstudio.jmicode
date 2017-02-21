@@ -1,0 +1,186 @@
+app\models\Tiket::__set_state(array(
+   '_attributes' => 
+  array (
+    'id' => 32,
+    'zakaz_id' => 1,
+    'user_id' => 7,
+    'task_name' => 'Еще один новый тикет',
+    'task_des' => 'тестирование',
+    'date_add' => '2017-02-14',
+    'date_close' => NULL,
+    'active' => 1,
+    'priority_id' => 3,
+    'performer_id' => 9,
+    'dead_line' => '2017-02-15',
+    'status' => 1,
+  ),
+   '_oldAttributes' => 
+  array (
+    'id' => 32,
+    'zakaz_id' => 1,
+    'user_id' => 7,
+    'task_name' => 'Еще один новый тикет',
+    'task_des' => 'тестирование',
+    'date_add' => '2017-02-14',
+    'date_close' => NULL,
+    'active' => 1,
+    'priority_id' => 3,
+    'performer_id' => 9,
+    'dead_line' => '2017-02-15',
+    'status' => 1,
+  ),
+   '_related' => 
+  array (
+    'users' => 
+    app\models\Users::__set_state(array(
+       '_attributes' => 
+      array (
+        'id' => 7,
+        'name' => 'Gex',
+        'password' => '$2y$13$zGPf5kfq3HVfvpcNs8Dh7OhOGdJtgblBDtH1lcWI/mAJxlVJkWl8q',
+        'auth_key' => '-cSnYc7TZno4nWrHs-krPgtR2m8pv_eo',
+        'avatar' => 'img/avatar/cat.gif',
+        'prim' => NULL,
+        'status' => 0,
+        'last_login' => NULL,
+      ),
+       '_oldAttributes' => 
+      array (
+        'id' => 7,
+        'name' => 'Gex',
+        'password' => '$2y$13$zGPf5kfq3HVfvpcNs8Dh7OhOGdJtgblBDtH1lcWI/mAJxlVJkWl8q',
+        'auth_key' => '-cSnYc7TZno4nWrHs-krPgtR2m8pv_eo',
+        'avatar' => 'img/avatar/cat.gif',
+        'prim' => NULL,
+        'status' => 0,
+        'last_login' => NULL,
+      ),
+       '_related' => 
+      array (
+      ),
+       '_errors' => NULL,
+       '_validators' => NULL,
+       '_scenario' => 'default',
+       '_events' => 
+      array (
+      ),
+       '_behaviors' => 
+      array (
+      ),
+    )),
+    'zakaz' => 
+    app\models\Zakaz::__set_state(array(
+       '_attributes' => 
+      array (
+        'id' => 1,
+        'klient_id' => 5,
+        'projectname' => 'Сухой лед',
+        'date_start' => '2016-05-01',
+        'date_end' => NULL,
+        'dead_line' => '2016-05-15',
+        'sum' => '10000.00',
+        'n_dog' => NULL,
+        'date_dog' => NULL,
+        'prim' => 'landing',
+        'status' => 0,
+      ),
+       '_oldAttributes' => 
+      array (
+        'id' => 1,
+        'klient_id' => 5,
+        'projectname' => 'Сухой лед',
+        'date_start' => '2016-05-01',
+        'date_end' => NULL,
+        'dead_line' => '2016-05-15',
+        'sum' => '10000.00',
+        'n_dog' => NULL,
+        'date_dog' => NULL,
+        'prim' => 'landing',
+        'status' => 0,
+      ),
+       '_related' => 
+      array (
+      ),
+       '_errors' => NULL,
+       '_validators' => NULL,
+       '_scenario' => 'default',
+       '_events' => 
+      array (
+      ),
+       '_behaviors' => 
+      array (
+      ),
+    )),
+    'performer' => 
+    app\models\Users::__set_state(array(
+       '_attributes' => 
+      array (
+        'id' => 9,
+        'name' => 'anka414',
+        'password' => '$2y$13$d1Oez4JdOWkyNbouUb8/dOv9/H06RCobAlQMZNxrbPFkdkSDM0Mj2',
+        'auth_key' => 'EfnCaGUUW3srbN2owTL_vY46j7VNwWob',
+        'avatar' => 'img/no_avatar.png',
+        'prim' => NULL,
+        'status' => 0,
+        'last_login' => NULL,
+      ),
+       '_oldAttributes' => 
+      array (
+        'id' => 9,
+        'name' => 'anka414',
+        'password' => '$2y$13$d1Oez4JdOWkyNbouUb8/dOv9/H06RCobAlQMZNxrbPFkdkSDM0Mj2',
+        'auth_key' => 'EfnCaGUUW3srbN2owTL_vY46j7VNwWob',
+        'avatar' => 'img/no_avatar.png',
+        'prim' => NULL,
+        'status' => 0,
+        'last_login' => NULL,
+      ),
+       '_related' => 
+      array (
+      ),
+       '_errors' => NULL,
+       '_validators' => NULL,
+       '_scenario' => 'default',
+       '_events' => 
+      array (
+      ),
+       '_behaviors' => 
+      array (
+      ),
+    )),
+    'priority' => 
+    app\models\Priority::__set_state(array(
+       '_attributes' => 
+      array (
+        'id' => 3,
+        'priority' => 'Похуй',
+      ),
+       '_oldAttributes' => 
+      array (
+        'id' => 3,
+        'priority' => 'Похуй',
+      ),
+       '_related' => 
+      array (
+      ),
+       '_errors' => NULL,
+       '_validators' => NULL,
+       '_scenario' => 'default',
+       '_events' => 
+      array (
+      ),
+       '_behaviors' => 
+      array (
+      ),
+    )),
+  ),
+   '_errors' => NULL,
+   '_validators' => NULL,
+   '_scenario' => 'default',
+   '_events' => 
+  array (
+  ),
+   '_behaviors' => 
+  array (
+  ),
+))
