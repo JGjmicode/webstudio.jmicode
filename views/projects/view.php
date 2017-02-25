@@ -6,6 +6,8 @@ use yii\widgets\Pjax;
 use app\models\Priority;
 use app\models\User;
 use yii\helpers\Url;
+
+$this->title = 'Проект #'. $zakaz->id;
 ?>
 <div class="container">
     <?php
@@ -66,6 +68,7 @@ use yii\helpers\Url;
                 <?= yii\helpers\Html::textInput('Zakaz[n_dog]', $zakaz->n_dog, ["id"=>"dog", "class" =>"form-control"]); ?>
                 от
                 <?= DatePicker::widget([
+                    //'options' => ['class'=> 'col-md-3'],
                     'name' => 'Zakaz[date_dog]',
                     'type' => DatePicker::TYPE_INPUT,
                     'value' => $zakaz->date_dog,
@@ -78,7 +81,7 @@ use yii\helpers\Url;
                 ]); ?>
             </div>
         </div>
-        <?php echo $form->field($zakaz, 'prim')?>
+        <?php echo $form->field($zakaz, 'prim')->textarea()?>
 
         <?php ActiveForm::end();?>
 
@@ -98,14 +101,22 @@ use yii\helpers\Url;
             ?>
         </div>
     </div>
-
-    <div class="col-md-12">
-        <?= Html::button('Выполнено', ["class" => "btn btn-success btn-right"]) ?>
-        <?= Html::submitButton('Сохранить', ["class" => "btn btn-default btn-right", "form" => "form-zakaz"]) ?>
-        <?= Html::button('Добавить тикет', ["id" => "add-tiket", "class" => "btn btn-default btn-right"]) ?>
-    </div>
-
-    <div class="col-md-12 files-panel-box">
+    <?php
+    ActiveForm::begin([
+        'id' => 'close-project-form',
+        'action' => Url::to(['/projects/close']),
+    ]);?>
+    <?= Html::hiddenInput('zakaz_id', $zakaz->id) ?>
+    <?php if($zakaz->status == 0){?>
+        <!-- Скрыть кнопки если проект закрыт-->
+        <div class="col-md-12">
+            <?= Html::submitButton('Закрыть проект', ["class" => "btn btn-success btn-left", "form" => "close-project-form"]) ?>
+            <?= Html::submitButton('Сохранить', ["class" => "btn btn-default btn-left", "form" => "form-zakaz"]) ?>
+            <?= Html::button('Добавить тикет', ["id" => "add-tiket", "class" => "btn btn-default btn-left"]) ?>
+        </div>
+    <?php }?>
+    <div class="clearfix"></div>
+    <div class="col-md-6 files-panel-box">
         <div class="panel panel-default">
             <div class="panel-heading files-panel">Файлы</div>
             <div class="panel-body files-body">
@@ -129,17 +140,20 @@ use yii\helpers\Url;
                 </table>
             </div>
         </div>
-        <div class="upload-files">
-            <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
-            <label for="file-des"><b>Примечание</b></label>
-            <?= Html::textInput('file-des', "", ["id"=>"file-des", "class" => "form-control col-md-3"]); ?>
-            <?= Html::fileInput('upFile'); ?>
-            <button type="submit" class="btn btn-default">Отправить</button>
-            <?php ActiveForm::end() ?>
-        </div>
+        <?php if($zakaz->status == 0){?>
+            <!-- Скрыть форму добавления файлов если проект закрыт-->
+            <div class="upload-files">
+                <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
+                <label for="file-des"><b>Примечание</b></label>
+                <?= Html::textInput('file-des', "", ["id"=>"file-des", "class" => "form-control col-md-3"]); ?>
+                <?= Html::fileInput('upFile'); ?>
+                <button type="submit" class="btn btn-default">Отправить</button>
+                <?php ActiveForm::end() ?>
+            </div>
+        <?php }?>
     </div>
 
-    <div class="col-md-12">
+    <div class="col-md-6">
         <p><b>Оплаты</b><p>
         <table class="table table-striped" id="paytable">
             <tr>
@@ -160,7 +174,10 @@ use yii\helpers\Url;
             <?php endforeach; ?>
         </table>
         <div>Остаток: <span class="rest">0</span> руб.</div>
-        <?= Html::button('Оплата', ["id"=>"btn-pay", "class" => "btn btn-default btn-right"]) ?>
+        <?php if($zakaz->status == 0){?>
+            <!-- Скрыть кнопку добавления оплаты если проект закрыт-->
+            <?= Html::button('Оплата', ["id"=>"btn-pay", "class" => "btn btn-default btn-right"]) ?>
+        <?php }?>
     </div>
 
     <div class="popup-input-window popup-pay">

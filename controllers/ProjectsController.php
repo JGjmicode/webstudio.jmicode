@@ -23,12 +23,27 @@ class ProjectsController extends BehaviorsController{
         ];
     }
 
-    public function actionIndex(){
+    public function actionIndex($success = NUll){
         $searchModel = new ZakazSearch();
         $dataProvider  = $searchModel->search(Yii::$app->request->get());
+        if(!is_null($success)){
+            $success = 'Проект успешно добавлен';
+        }
         return $this->render('index', [
            'searchModel' => $searchModel,
            'dataProvider' => $dataProvider,
+           'success' => $success,
+        ]);
+    }
+
+    public function actionAdd(){
+        $zakaz = new Zakaz();
+        if($zakaz->load(Yii::$app->request->post()) && $zakaz->save()){
+            return $this->redirect(['/projects/index', 'success' => '']);
+        }
+
+        return $this->render('add', [
+            'zakaz' => $zakaz,
         ]);
     }
 
@@ -50,6 +65,15 @@ class ProjectsController extends BehaviorsController{
                 'zakaz' => $zakaz,
                 'tiket' => $tiket,
             ]);
+        }
+    }
+
+    public function actionClose(){
+        $zakaz_id = Yii::$app->request->post('zakaz_id');
+        if(!is_null($zakaz_id)){
+            if(Zakaz::closeZakaz($zakaz_id)){
+                return $this->redirect(['/projects/view', 'id' => $zakaz_id]);
+            }
         }
     }
     

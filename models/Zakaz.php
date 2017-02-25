@@ -3,19 +3,7 @@ namespace app\models;
 
 class Zakaz extends \yii\db\ActiveRecord {
     
-    
-    /*public static function model($className=__CLASS__){
-        return parent::model($className);
-    }
 
-    public static function tableName() {
-        return "zakaz";
-    }
-
-    public static function primaryKey() {
-        return array("id");
-    }
-    */
     public function uploadFiles($file, $desc, $id) {
         $filePath = 'upload/';
         $date = strtotime('now');
@@ -43,47 +31,15 @@ class Zakaz extends \yii\db\ActiveRecord {
                 ]
                 )->execute();                        
     }
-    
-    /*public function setTiket($title, $text, $id) {
-        $userId = \Yii::$app->user->getId();
-        \Yii::$app->db->createCommand()->insert(
-                "tiket",
-                [
-                    'zakaz_id' => $id,
-                    'user_id' => $userId,
-                    'task_name' => $title,
-                    'task_des' => $text,
-                    'date_add' => date("Y-m-d"),
-                ]
-                )->execute();
-    }
-    */
-    public function setNewZakaz($params) {
-        if ($params['date-start'] == "")
-            $date1 = null;
-        else             
-            $date1 = date_format(\DateTime::createFromFormat("d-m-Y", $params['date-start']), "Y-m-d");
-        if ($params['deadline'] == "")
-            $date2 = null;
-        else 
-            $date2 = date_format(\DateTime::createFromFormat("d-m-Y", $params['deadline']), "Y-m-d");            
-        if ($params['sum'] == "")
-            $sum = 0;
-        else
-            $sum = $params['sum'];            
-        
-        \Yii::$app->db->createCommand()->insert(
-                'zakaz', 
-                [
-                    'klient_id' => $params['klient'],
-                    'projectname' => $params['name'],
-                    'date_start' => $date1,
-                    'dead_line' => $date2,
-                    'sum' => $sum,
-                    'prim' => $params['prim'],
-                ])->execute();
-        $id = \Yii::$app->db->getLastInsertID();
-        return $id;
+
+    public static function closeZakaz($id){
+        $zakaz = self::findOne($id);
+        $zakaz->status = true;
+        if($zakaz->save()){
+            return true;
+        }else {
+            return false;
+        }
     }
 
 
@@ -125,7 +81,8 @@ class Zakaz extends \yii\db\ActiveRecord {
         return array(
             "id" => "id",
             
-            "klient_id" => "klient_id",
+            "klient.name" => "Клиент",
+            "klient_id" => "Клиент",
             "projectname" => "Наименование",
             "date_start" => "Дата начала",
             "date_end" => "Дата закрытия",
@@ -138,7 +95,7 @@ class Zakaz extends \yii\db\ActiveRecord {
     public function rules()
     {
         return [[['projectname'], 'required'],
-            [['date_start', 'dead_line', 'sum', 'prim', 'n_dog', 'date_dog'], 'default']
+            [['date_start', 'dead_line', 'sum', 'prim', 'n_dog', 'date_dog', 'klient_id'], 'default']
 
         ];
     }
