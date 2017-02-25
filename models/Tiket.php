@@ -47,7 +47,9 @@ class Tiket extends \yii\db\ActiveRecord{
         $this->date_add = date("Y-m-d");
         $this->user_id = Yii::$app->user->getId();
         $this->zakaz_id = $id;
-        $this->save();
+        if($this->save()){
+            return true;
+        }else return false;
 
     }
     
@@ -64,7 +66,7 @@ class Tiket extends \yii\db\ActiveRecord{
 
     public function rules()    {
         return [
-            [['task_name', 'task_des'], 'required'],
+            [['task_name', 'task_des', 'zakaz_id'], 'required'],
             [['priority_id', 'performer_id', 'dead_line'], 'default'],
         ];
     }
@@ -80,6 +82,7 @@ class Tiket extends \yii\db\ActiveRecord{
             'dead_line' => 'Крайний срок',
             'date_close' => 'Исполнение',
             'date_add' => 'Создана',
+            'zakaz_id' => 'Проект',
         ];
     }
 

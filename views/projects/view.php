@@ -208,7 +208,7 @@ use yii\helpers\Url;
                 <?= $tiketForm->field($tiket, 'performer_id')->dropDownList(User::find()->select(['name', 'id'])->indexBy('id')->column(),
                     ['prompt' => 'Выберите Исполнителя'])?>
 
-                <?= $form->field($tiket, 'dead_line')->widget(DatePicker::classname(), [
+                <?= $tiketForm->field($tiket, 'dead_line')->widget(DatePicker::classname(), [
                     'type' => DatePicker::TYPE_COMPONENT_APPEND,
                     'language' => 'ru',
                     'pluginOptions' => [

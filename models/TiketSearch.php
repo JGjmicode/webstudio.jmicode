@@ -7,6 +7,10 @@ class TiketSearch extends Tiket{
 
     public $date_add_from;
     public $date_add_to;
+    public $date_close_from;
+    public $date_close_to;
+    public $dead_line_to;
+    public $dead_line_from;
 
     public static function tableName()
     {
@@ -50,12 +54,8 @@ class TiketSearch extends Tiket{
         ];
 
         if (!($this->load($params) && $this->validate())) {
-            $query->andFilterWhere(['like', 'active', true]);
-            return $dataProvider;
-        }
 
-        if($this->active){
-            $query->andFilterWhere(['like', 'active', $this->getAttribute('active')]);
+            return $dataProvider;
         }
 
 
@@ -65,8 +65,9 @@ class TiketSearch extends Tiket{
             ->andFilterWhere(['like', 'priority.id', $this->getAttribute('priority.priority')])
             ->andFilterWhere(['like', 'performer.name', $this->getAttribute('performer.name')])
             ->andFilterWhere(['like', 'active', $this->getAttribute('active')])
-            //->andFilterWhere(['>=', 'date_add', $this->date_add_from]);
-            ->andFilterWhere(['between', 'date_add', $this->date_add_from, $this->date_add_to]);
+            ->andFilterWhere(['between', 'date_add', $this->date_add_from, $this->date_add_to])
+            ->andFilterWhere(['between', 'date_close', $this->date_close_from, $this->date_close_to])
+            ->andFilterWhere(['between', 'tiket.dead_line', $this->dead_line_from, $this->dead_line_to]);
 
 
         return $dataProvider;
@@ -75,9 +76,12 @@ class TiketSearch extends Tiket{
     public function rules()
     {
         return [
-            [['zakaz.projectname', 'task_name', 'users.name', 'performer.name', 'priority.priority', 'date_add', 'date_add_to', 'date_add_from', 'active' ], 'safe'],
-            //[['date_add_from', 'date_add_to'], 'date', 'format' => 'php:Y.m.d'],
-        ];
+            [['zakaz.projectname', 'task_name', 'users.name',
+                'performer.name', 'priority.priority',
+                'date_add', 'date_add_to', 'date_add_from',
+                'active', 'date_close_from', 'date_close_to',
+                'dead_line_from', 'dead_line_to' ], 'safe'],
+            ];
     }
 
     public function attributes()

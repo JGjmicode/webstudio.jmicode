@@ -22,7 +22,7 @@ AppAsset::register($this);
     <header class="header">      
         <div class="container">
           <div class="main-logo">
-                <?= Html::img("img/sitelogo.png"); ?>              
+                <?= Html::img("/img/sitelogo.png"); ?>
           </div>
             <!--Отображение меню для зарегистрированных пользователей-->
             <?php
@@ -32,7 +32,7 @@ AppAsset::register($this);
             <ul>
                 <li><?= Html::a("Проекты", yii\helpers\Url::toRoute("projects/index")); ?></li>
                 <li><?= Html::a("Клиенты", yii\helpers\Url::toRoute("site/klient")); ?></li>
-                <li><?= Html::a("Задачи", yii\helpers\Url::toRoute("tikets/index")); ?></li>
+                <li><?= Html::a("Задачи", yii\helpers\Url::toRoute(["tikets/index", 'TiketSearch[active]' => true])); ?></li>
                 <li><?= Html::a("Профиль", yii\helpers\Url::toRoute("site/userprofile")); ?></li>
             </ul>
           </nav>

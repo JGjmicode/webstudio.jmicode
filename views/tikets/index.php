@@ -5,36 +5,31 @@ use app\models\Priority;
 use yii\helpers\ArrayHelper;
 use kartik\date\DatePicker;
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+use app\models\User;
+use app\models\Zakaz;
 
 $this->title = 'Задачи';
 ?>
+<?php
+echo (!is_null($success)) ?  "<div class='text-success'>$success</div>" : '';
+?>
+
 
     <h2 align="center">Список задач</h2>
-
+<?= Html::a('Очистить фильтры', ['index'], ['class' => 'btn btn-info']) ?>
+<?= Html::button('Добавить тикет', ["id" => "add-tiket", "class" => "btn btn-default btn-left"]) ?>
 <?php
 
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
-    'rowOptions' => function ($model, $key, $index, $grid) {
-        //file_put_contents('model.txt', var_export($model, true));
-        //file_put_contents('key.txt', var_export($key, true));
-        //file_put_contents('index.txt', var_export($index, true));
-        //file_put_contents('grid.txt', var_export($grid, true));
+    'rowOptions' => function ($model) {
         if (!is_null($model->priority)) {
-            switch ($model->priority->id) {
-                case 1:
-                    return ['class' => 'warning'];
-                    break;
-                case 2:
-                    return ['class' => 'danger'];
-                    break;
-                case 3:
-                    return ['class' => 'success'];
-                    break;
-            }
-            return ['class' => 'test'];
-        }else {
+            if (!is_null($model->priority->class)) {
+                return ['class' => $model->priority->class];
+            }else return ['class' => 'info'];
+        }else{
             return ['class' => 'info'];
         }
     }    ,
@@ -65,8 +60,28 @@ echo GridView::widget([
                 'pluginOptions' => ['format' => 'yyyy-mm-dd']
             ]),
         ],
-        ['attribute' => 'date_close'],
-        ['attribute' => 'dead_line'],
+        ['attribute' => 'date_close',
+            'filter' => DatePicker::widget([
+            'language' => 'ru',
+            'model' => $searchModel,
+            'attribute' => 'date_close_from',
+            'attribute2' => 'date_close_to',
+            'type' => DatePicker::TYPE_RANGE,
+            'separator' => '-',
+            'pluginOptions' => ['format' => 'yyyy-mm-dd']
+        ]),
+        ],
+        ['attribute' => 'dead_line',
+            'filter' => DatePicker::widget([
+                'language' => 'ru',
+                'model' => $searchModel,
+                'attribute' => 'dead_line_from',
+                'attribute2' => 'dead_line_to',
+                'type' => DatePicker::TYPE_RANGE,
+                'separator' => '-',
+                'pluginOptions' => ['format' => 'yyyy-mm-dd']
+            ]),
+        ],
         ['attribute' => 'users.name'],
         ['attribute' => 'performer.name'],
         ['attribute' => 'zakaz.projectname'],
@@ -89,4 +104,58 @@ echo GridView::widget([
         ],
     ]
 ]);
+?>
 
+<div class="popup-input-window popup-tiket">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Новый тикет</h3>
+        </div>
+        <div class="panel-body">
+            <?php $tiketForm = ActiveForm::begin(); ?>
+            <?= $tiketForm->field($tiket, 'task_name')?>
+            <?= $tiketForm->field($tiket, 'task_des')?>
+            <?= $tiketForm->field($tiket, 'zakaz_id')->dropDownList(Zakaz::find()->select(['projectname', 'id'])->indexBy('id')->column(),
+                ['prompt' => 'Выберите проект'])?>
+            <?= $tiketForm->field($tiket, 'priority_id')->dropDownList(Priority::find()->select(['priority', 'id'])->indexBy('id')->column(),
+                ['prompt' => 'Выберите приоритет'])?>
+            <?= $tiketForm->field($tiket, 'performer_id')->dropDownList(User::find()->select(['name', 'id'])->indexBy('id')->column(),
+                ['prompt' => 'Выберите Исполнителя'])?>
+
+            <?= $tiketForm->field($tiket, 'dead_line')->widget(DatePicker::classname(), [
+                'type' => DatePicker::TYPE_COMPONENT_APPEND,
+                'language' => 'ru',
+                'pluginOptions' => [
+                    'autoclose'=>true,
+                    'format' => 'yyyy-mm-dd',
+                    'todayHighlight' => true
+                ]
+            ])
+            ?>
+            <?= Html::button('Отмена', ["id"=>"btn-cancel1", "class" => "btn btn-default btn-right"]) ?>
+            <?= Html::submitButton("Сохранить", ["id"=>"btn-sbmt1", "class" => "btn btn-default btn-right"]) ?>
+            <?php ActiveForm::end(); ?>
+        </div>
+    </div>
+</div>
+
+<div class="overlay"></div>
+
+
+<script>
+    var btnAddT = document.querySelector("#add-tiket");
+    var cancel1 = document.querySelector("#btn-cancel1");
+    var popupTiket = document.querySelector(".popup-tiket");
+    var overlay = document.querySelector(".overlay");
+
+    btnAddT.addEventListener("click", function() {
+        overlay.classList.add("modal-content-show");
+        popupTiket.classList.add("modal-content-show");
+    });
+    cancel1.addEventListener("click", function(){
+        popupTiket.classList.remove("modal-content-show");
+        overlay.classList.remove("modal-content-show");
+    });
+
+
+</script>

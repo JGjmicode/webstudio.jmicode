@@ -12,11 +12,21 @@ class TiketsController extends BehaviorsController{
     
     public function actionIndex(){
         $searchModel = new TiketSearch();
-        //$searchModel->active = 1;
         $dataProvider = $searchModel->search(Yii::$app->request->get());
+        $tiket = new Tiket();
+        $success = NULL;
+        if($tiket->load(Yii::$app->request->post()) && $tiket->validate()){
+            if($tiket->saveTiket($tiket->zakaz_id)){
+                $success = 'Задача успешно добавлена!';
+            }
+
+        }
+        
         return $this->render('index',[
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'tiket' => $tiket,
+            'success' => $success,
         ]);
     }
 
