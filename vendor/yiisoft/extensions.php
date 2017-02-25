@@ -84,4 +84,31 @@ return array (
       '@kartik/date' => $vendorDir . '/kartik-v/yii2-widget-datepicker',
     ),
   ),
+  'kartik-v/yii2-widget-growl' => 
+  array (
+    'name' => 'kartik-v/yii2-widget-growl',
+    'version' => '1.1.1.0',
+    'alias' => 
+    array (
+      '@kartik/growl' => $vendorDir . '/kartik-v/yii2-widget-growl',
+    ),
+  ),
+  'kartik-v/yii2-widget-alert' => 
+  array (
+    'name' => 'kartik-v/yii2-widget-alert',
+    'version' => '1.1.0.0',
+    'alias' => 
+    array (
+      '@kartik/alert' => $vendorDir . '/kartik-v/yii2-widget-alert',
+    ),
+  ),
+  '2amigos/yii2-transliterator-helper' => 
+  array (
+    'name' => '2amigos/yii2-transliterator-helper',
+    'version' => '0.1.0.0',
+    'alias' => 
+    array (
+      '@dosamigos/transliterator' => $vendorDir . '/2amigos/yii2-transliterator-helper',
+    ),
+  ),
 );

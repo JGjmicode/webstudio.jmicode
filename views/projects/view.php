@@ -6,13 +6,27 @@ use yii\widgets\Pjax;
 use app\models\Priority;
 use app\models\User;
 use yii\helpers\Url;
+use kartik\alert\Alert;
+use app\models\Zakaz;
+
 
 $this->title = 'Проект #'. $zakaz->id;
 ?>
+<?php
+    if(!is_null($message)){
+        echo Alert::widget([
+            'type' => Alert::TYPE_SUCCESS,
+            'title' => 'Well done!',
+            'icon' => 'glyphicon glyphicon-ok-sign',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => 2000
+        ]);
+    }
+?>
+
 <div class="container">
-    <?php
-        echo (isset($success)) ?  "<div class='text-success'>$success</div>" : '';
-    ?>
+
     <div class="col-md-6">
         <h4>Проект # <?= $zakaz->id ?>  </h4>
         <p><?php
@@ -107,6 +121,7 @@ $this->title = 'Проект #'. $zakaz->id;
         'action' => Url::to(['/projects/close']),
     ]);?>
     <?= Html::hiddenInput('zakaz_id', $zakaz->id) ?>
+    <?php ActiveForm::end() ?>
     <?php if($zakaz->status == 0){?>
         <!-- Скрыть кнопки если проект закрыт-->
         <div class="col-md-12">
@@ -143,11 +158,10 @@ $this->title = 'Проект #'. $zakaz->id;
         <?php if($zakaz->status == 0){?>
             <!-- Скрыть форму добавления файлов если проект закрыт-->
             <div class="upload-files">
-                <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
-                <label for="file-des"><b>Примечание</b></label>
-                <?= Html::textInput('file-des', "", ["id"=>"file-des", "class" => "form-control col-md-3"]); ?>
-                <?= Html::fileInput('upFile'); ?>
-                <button type="submit" class="btn btn-default">Отправить</button>
+                <?php $uploadForm = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
+                <?= $uploadForm->field($zakazFiles, 'des', ['inputOptions' => ['id' => 'file-des', 'class' => 'form-control col-md-3']]) ?>
+                <?= $uploadForm->field($zakazFiles, 'uploadFile')->fileInput() ?>
+                <?= Html::submitButton('Загрузить', ["class" => "btn btn-default btn-left"]) ?>
                 <?php ActiveForm::end() ?>
             </div>
         <?php }?>
@@ -220,6 +234,8 @@ $this->title = 'Проект #'. $zakaz->id;
                 <?php $tiketForm = ActiveForm::begin(); ?>
                 <?= $tiketForm->field($tiket, 'task_name')?>
                 <?= $tiketForm->field($tiket, 'task_des')?>
+                <?= $tiketForm->field($tiket, 'zakaz_id')->dropDownList(Zakaz::find()->select(['projectname', 'id'])->indexBy('id')->column(),
+                    ['prompt' => 'Выберите проект'])?>
                 <?= $tiketForm->field($tiket, 'priority_id')->dropDownList(Priority::find()->select(['priority', 'id'])->indexBy('id')->column(),
                     ['prompt' => 'Выберите приоритет'])?>
                 <?= $tiketForm->field($tiket, 'performer_id')->dropDownList(User::find()->select(['name', 'id'])->indexBy('id')->column(),

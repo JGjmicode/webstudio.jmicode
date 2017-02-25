@@ -6,8 +6,11 @@ use app\models\Zakaz;
 use app\models\ZakazSearch;
 use Yii;
 use yii\helpers\Url;
-
+use app\models\Zakazfiles;
+use yii\web\UploadedFile;
 class ProjectsController extends BehaviorsController{
+
+    public $message = NULL;
 
     public function actions()
     {
@@ -51,20 +54,33 @@ class ProjectsController extends BehaviorsController{
         if(!is_null($id)) {
             $zakaz = Zakaz::findOne($id);
             $tiket = new Tiket();
+            $tiket->zakaz_id = $id;
+            $zakazFiles = new Zakazfiles();
+
             if($zakaz->load(Yii::$app->request->post()) && $zakaz->save()){
-                return $this->render('view', [
-                    'zakaz' => $zakaz,
-                    'tiket' => $tiket,
-                    'success' => 'Изменения успешно сохранены!'
-                ]);
+                $this->message = 'Изменения успешно сохранены!';
             }
+
             if($tiket->load(Yii::$app->request->post()) && $tiket->validate()){
                 $tiket->saveTiket($id);
+                $this->message = 'Задача успешно добавлена!';
+            }
+
+            if($zakazFiles->load(Yii::$app->request->post()) && $zakazFiles->validate()) {
+                $zakazFiles->uploadFile = UploadedFile::getInstance($zakazFiles, 'uploadFile');
+                if ($zakazFiles->upload($zakaz->projectname, $id)) {
+                    $this->message = 'Файл успешно загружен!';
+                }
             }
             return $this->render('view', [
                 'zakaz' => $zakaz,
                 'tiket' => $tiket,
+                'zakazFiles' => $zakazFiles,
+                'message' => $this->message,
+
             ]);
+        }else {
+            return $this->redirect(['/projects/index']);
         }
     }
 

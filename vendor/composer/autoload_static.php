@@ -25,9 +25,15 @@ class ComposerStaticInit3210013bb5bc010da60ac27a4a84326b
         ),
         'k' => 
         array (
+            'kartik\\growl\\' => 13,
             'kartik\\field\\' => 13,
             'kartik\\date\\' => 12,
             'kartik\\base\\' => 12,
+            'kartik\\alert\\' => 13,
+        ),
+        'd' => 
+        array (
+            'dosamigos\\transliterator\\' => 25,
         ),
         'c' => 
         array (
@@ -72,6 +78,10 @@ class ComposerStaticInit3210013bb5bc010da60ac27a4a84326b
         array (
             0 => __DIR__ . '/..' . '/yiisoft/yii2',
         ),
+        'kartik\\growl\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kartik-v/yii2-widget-growl',
+        ),
         'kartik\\field\\' => 
         array (
             0 => __DIR__ . '/..' . '/kartik-v/yii2-field-range',
@@ -83,6 +93,14 @@ class ComposerStaticInit3210013bb5bc010da60ac27a4a84326b
         'kartik\\base\\' => 
         array (
             0 => __DIR__ . '/..' . '/kartik-v/yii2-krajee-base',
+        ),
+        'kartik\\alert\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kartik-v/yii2-widget-alert',
+        ),
+        'dosamigos\\transliterator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/2amigos/yii2-transliterator-helper',
         ),
         'cebe\\markdown\\' => 
         array (
