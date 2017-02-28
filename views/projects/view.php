@@ -8,6 +8,7 @@ use app\models\User;
 use yii\helpers\Url;
 use kartik\alert\Alert;
 use app\models\Zakaz;
+use app\models\FileTypesIcons;
 
 
 $this->title = 'Проект #'. $zakaz->id;
@@ -147,7 +148,7 @@ $this->title = 'Проект #'. $zakaz->id;
                         echo "<tr>";
                         echo "<td>".$val->des."</td>";
                         echo "<td>";
-                        echo Html::a($val->name, $val->path);
+                        echo Html::a(Html::img((FileTypesIcons::getIcon($val->type)) ? FileTypesIcons::getIcon($val->type) : '/img/icon-files/Default.png' ,['alt' => $val->name,'width' => '35px']), $val->path);
                         echo "</td>";
                         echo "<td>X</td>";
                         echo "</tr>";
