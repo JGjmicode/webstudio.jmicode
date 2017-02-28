@@ -8,12 +8,14 @@ use Yii;
 use yii\helpers\Url;
 use app\models\Zakazfiles;
 use yii\web\UploadedFile;
+use app\models\Oplata;
 class ProjectsController extends BehaviorsController{
 
-    public $message = NULL;
+    public $session;
 
     public function actions()
     {
+        $this->session = Yii::$app->session;
         $this->layout = "wpLayout";
         return [
             'error' => [
@@ -26,23 +28,22 @@ class ProjectsController extends BehaviorsController{
         ];
     }
 
-    public function actionIndex($success = NUll){
+    public function actionIndex(){
         $searchModel = new ZakazSearch();
         $dataProvider  = $searchModel->search(Yii::$app->request->get());
-        if(!is_null($success)){
-            $success = 'Проект успешно добавлен';
-        }
+
         return $this->render('index', [
            'searchModel' => $searchModel,
            'dataProvider' => $dataProvider,
-           'success' => $success,
+           'session' => $this->session,
         ]);
     }
 
     public function actionAdd(){
         $zakaz = new Zakaz();
         if($zakaz->load(Yii::$app->request->post()) && $zakaz->save()){
-            return $this->redirect(['/projects/index', 'success' => '']);
+            $this->session->setFlash('message', 'Заказ успешно добавлен!');
+            return $this->redirect(['/projects/index']);
         }
 
         return $this->render('add', [
@@ -56,27 +57,39 @@ class ProjectsController extends BehaviorsController{
             $tiket = new Tiket();
             $tiket->zakaz_id = $id;
             $zakazFiles = new Zakazfiles();
+            $oplata = new Oplata();
+            $oplata->date_opl = date('Y-m-d');
 
             if($zakaz->load(Yii::$app->request->post()) && $zakaz->save()){
-                $this->message = 'Изменения успешно сохранены!';
+                $this->session->setFlash('message', 'Изменения успешно сохранены!');
+                return $this->redirect(['/projects/view', 'id' => $id]);
             }
 
             if($tiket->load(Yii::$app->request->post()) && $tiket->validate()){
                 $tiket->saveTiket($id);
-                $this->message = 'Задача успешно добавлена!';
+                $this->session->setFlash('message', 'Задача успешно добавлена!');
+                return $this->redirect(['/projects/view', 'id' => $id]);
             }
 
             if($zakazFiles->load(Yii::$app->request->post()) && $zakazFiles->validate()) {
                 $zakazFiles->uploadFile = UploadedFile::getInstance($zakazFiles, 'uploadFile');
                 if ($zakazFiles->upload($zakaz->projectname, $id)) {
-                    $this->message = 'Файл успешно загружен!';
+                    $this->session->setFlash('message', 'Файл успешно загружен!');
+                    return $this->redirect(['/projects/view', 'id' => $id]);
                 }
             }
+
+            if($oplata->load(Yii::$app->request->post()) && $oplata->save()){
+                $this->session->setFlash('message', 'Оплата успешно добавлена');
+                return $this->redirect(['/projects/view', 'id' => $id]);
+            }
+            
             return $this->render('view', [
                 'zakaz' => $zakaz,
                 'tiket' => $tiket,
                 'zakazFiles' => $zakazFiles,
-                'message' => $this->message,
+                'oplata' => $oplata,
+                'session' => $this->session,
 
             ]);
         }else {
@@ -88,6 +101,7 @@ class ProjectsController extends BehaviorsController{
         $zakaz_id = Yii::$app->request->post('zakaz_id');
         if(!is_null($zakaz_id)){
             if(Zakaz::closeZakaz($zakaz_id)){
+                $this->session->setFlash('message', 'Проект выполнен!');
                 return $this->redirect(['/projects/view', 'id' => $zakaz_id]);
             }
         }

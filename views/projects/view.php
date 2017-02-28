@@ -13,16 +13,17 @@ use app\models\Zakaz;
 $this->title = 'Проект #'. $zakaz->id;
 ?>
 <?php
-    if(!is_null($message)){
+    if($session->has('message')) {
         echo Alert::widget([
             'type' => Alert::TYPE_SUCCESS,
             'title' => 'Well done!',
             'icon' => 'glyphicon glyphicon-ok-sign',
-            'body' => $message,
+            'body' => $session->getFlash('message'),
             'showSeparator' => true,
             'delay' => 2000
         ]);
     }
+
 ?>
 
 <div class="container">
@@ -201,22 +202,21 @@ $this->title = 'Проект #'. $zakaz->id;
             </div>
             <div class="panel-body">
 
-                <?php \yii\widgets\ActiveForm::begin(); ?>
+                <?php $oplataForm = ActiveForm::begin(); ?>
 
-                <label for="sum">Сумма </label>
-                <?= Html::textInput("sum","", ["id"=>"sum", "class" =>"form-control", ""]); ?>
-                <span>Дата </span><?= DatePicker::widget([
-                    'name' => 'date_pay',
+                <?=$oplataForm->field($oplata, 'oplata')?>
+                <?= $oplataForm->field($oplata, 'date_opl')->widget(DatePicker::classname(), [
                     'type' => DatePicker::TYPE_COMPONENT_APPEND,
-                    'value' => '',
                     'language' => 'ru',
                     'pluginOptions' => [
                         'autoclose'=>true,
-                        'format' => 'dd-mm-yyyy',
+                        'format' => 'yyyy-mm-dd',
                         'todayHighlight' => true
                     ]
-                ]); ?>
-                <label for="prim1">Примечание </label><?= Html::textInput("prim1","", ["id"=>"prim1", "class" =>"form-control"]); ?>
+                ])
+                ?>
+                <?=$oplataForm->field($oplata, 'prim')?>
+                <?=$oplataForm->field($oplata, 'zakaz_id')->hiddenInput(['value' => $zakaz->id])->label(false, ['style'=>'display:none'])?>
                 <?= Html::button('Отмена', ["id"=>"btn-cancel", "class" => "btn btn-default btn-right"]) ?>
                 <?= Html::submitButton("Сохранить", ["id"=>"btn-sbmt", "class" => "btn btn-default btn-right"]) ?>
 

@@ -30,6 +30,7 @@ class Zakazfiles extends \yii\db\ActiveRecord{
                 $this->zakaz_id = $id;
                 $this->path = '/'.$path . '/' . $fileName;
                 $this->name = $fileName;
+                $this->type = $this->uploadFile->type;
                 if ($this->save()) {
                     return true;
                 } else {
