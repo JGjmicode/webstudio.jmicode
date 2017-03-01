@@ -73,7 +73,7 @@ AppAsset::register($this);
         <p><img src="/img/jmilogo.png" width=80px height=60px></p>
         <p class="pull-left">&copy; JMI <?= date('Y') ?></p>
 
-        <p class="pull-right"><?= Yii::powered() ?></p>
+        <p class="pull-right"><?= Yii::powered() ?> <?= Yii::getVersion()?></p>
     </div>
 </footer>    
 <?php $this->endBody() ?>
