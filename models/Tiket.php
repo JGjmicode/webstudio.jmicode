@@ -11,11 +11,11 @@ class Tiket extends \yii\db\ActiveRecord{
     }
     
     public function getUsers() {
-        return $this->hasOne(Users::className(), ["id"=>"user_id"]);
+        return $this->hasOne(User::className(), ["id"=>"user_id"]);
     }
 
     public function getPerformer(){
-        return $this->hasOne(Users::className(), ['id' => 'performer_id']);
+        return $this->hasOne(User::className(), ['id' => 'performer_id']);
     }
 
     public function getPriority(){
