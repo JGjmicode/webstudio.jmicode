@@ -5,6 +5,7 @@
 
 use yii\helpers\Html;
 use app\assets\AppAsset;
+use kartik\alert\Alert;
 
 AppAsset::register($this);
 ?>
@@ -34,6 +35,7 @@ AppAsset::register($this);
                 <li><?= Html::a("Клиенты", yii\helpers\Url::toRoute("site/klient")); ?></li>
                 <li><?= Html::a("Задачи", yii\helpers\Url::toRoute(["tikets/index", 'TiketSearch[active]' => true])); ?></li>
                 <li><?= Html::a("Профиль", yii\helpers\Url::toRoute("site/userprofile")); ?></li>
+                <li><?= Html::a("Профили пользователей", yii\helpers\Url::toRoute("site/manage-profile")); ?></li>
             </ul>
           </nav>
             
@@ -64,6 +66,9 @@ AppAsset::register($this);
     <?php $this->beginBody() ?>
 
     <div class="container">
+        <?php
+            echo $this->render('flashes');
+        ?>
             <?= $content ?>
     </div>
 

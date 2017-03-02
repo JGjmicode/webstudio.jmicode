@@ -26,8 +26,10 @@ class LoginForm extends Model
             // username and password are both required
             ['username', 'required', 'message' => 'Поле не должно быть пустым'],
             ['password', 'required', 'message' => "Поле не должно быть пустым"],
+            ['username', 'validateStatus'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
+            
         ];
     }
 
@@ -45,6 +47,16 @@ class LoginForm extends Model
 
             if (!$user || !$user->validatePassword($this->password)) {
                 $this->addError($attribute, 'Неверно введен пользователь или пароль.');
+            }
+        }
+    }
+
+    public function validateStatus($attribute){
+        if (!$this->hasErrors()) {
+            $user = $this->getUser();
+
+            if (!$user || !$user->validateStatus($this->username)) {
+                $this->addError($attribute, 'Пользователь не активирован.');
             }
         }
     }
@@ -74,4 +86,6 @@ class LoginForm extends Model
 
         return $this->_user;
     }
+
+
 }

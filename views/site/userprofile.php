@@ -2,23 +2,32 @@
 use yii\helpers\Html;
 use yii\helpers\FileHelper;
 use yii\widgets\ActiveForm;
+
+$this->title = 'Редактирование профиля';
+
 ?>
 
 <div class="container">
     <h4> Редактирование профиля </h4>
     <?php
-        $userIdentity = Yii::$app->user->identity;                
         $avatarFiles = FileHelper::findFiles('img/avatar/', ['only' =>['*.png', '*.gif']]);
     ?>
-    <?php ActiveForm::begin(); ?>
-    <div calss='avatar'>
-        <img class='user-avatar' name='avatar' src='/<?= $userIdentity['avatar'] ?>' width='64' height='64'></img>
-        <?= Html::input('text', 'avatar-field', $userIdentity['avatar'], ['class' => 'avatar-field']); ?>
+    <?php $userEdit = ActiveForm::begin(); ?>
+    <div class='avatar'>
+        <img class='user-avatar' name='avatar' src='/<?= $user->avatar ?>' width='64' height='64'></img>
+
     </div>
     <div class='user-account'>
-        <?= Html::input('text', 'login', $userIdentity['name']); ?><br>
-        <?= Html::input('password', 'pass'); ?><br>
-        <?= Html::input('password', 're-pass'); ?><br>
+        <?=$userEdit->field($user, 'name')?>
+        <?=$userEdit->field($user, 'skype')?>
+        <?=$userEdit->field($user, 'phone')?>
+        <?=$userEdit->field($user, 'e_mail')?>
+        <?=$userEdit->field($user, 'old_password')->passwordInput()?>
+        <?=$userEdit->field($user, 'new_password_repeat')->passwordInput()?>
+        <?=$userEdit->field($user, 'new_password')->passwordInput()?>
+        <?=$userEdit->field($user, 'avatar')->hiddenInput(['class' => 'avatar-field'])->label(false)?>
+
+
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
     </div>
     <?php ActiveForm::end(); ?>
@@ -56,6 +65,7 @@ use yii\widgets\ActiveForm;
         evt.target.classList.add('avatar-image--active');
         selectedImage = evt.target;
         var avField = document.querySelector('.avatar-field');
+        console.log(userImage.src);
         avField.value = evt.target.src;
     }
     

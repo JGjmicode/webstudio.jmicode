@@ -3,9 +3,15 @@
 namespace app\models;
 use yii\web\IdentityInterface;
 use yii\db\ActiveRecord;
+use Yii;
+class User extends ActiveRecord implements IdentityInterface{
 
-class User extends ActiveRecord implements IdentityInterface
-{
+    public $new_password;
+    public $new_password_repeat;
+    public $old_password;
+
+    const ACTIVE = 1;
+
 
     public static function tableName() {
         return 'users';
@@ -27,6 +33,15 @@ class User extends ActiveRecord implements IdentityInterface
     
     public function validatePassword($password) {
         return \Yii::$app->security->validatePassword($password, $this->password);
+    }
+
+    public function validateStatus($name){
+        $user = self::findOne(['name' => $name]);
+        if($user->status == self::ACTIVE){
+            return true;
+        }else{
+            return false;
+        }
     }
     
     /*  Аутентификация */
@@ -64,4 +79,79 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->name;
     }
+
+    public function editProfile(){
+        if($this->new_password != '') {
+            if ($this->validatePassword($this->old_password)) {
+                $this->setPassword($this->new_password);
+            }
+        }
+        $pathArray = explode('/', $this->avatar);
+        $fileName = array_pop($pathArray);
+        $this->avatar = 'img/avatar/'.$fileName;
+        if($this->save()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function rules()
+    {
+        return [
+            [['new_password_repeat', 'name', 'skype', 'e_mail', 'phone', 'avatar'], 'default'],
+            ['new_password', 'compare', 'message' => 'Введенные пароли не совпадают'],
+            [['e_mail'], 'email'],
+            ['old_password', 'required', 'when' => function ($model) {
+                return $model->new_password != '';
+                }, 'whenClient' => "function (attribute, value) {
+                return $('#user-new_password').val() != '';
+                }"],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'name' => 'Login',
+            'e_mail' => 'E-Mail',
+            'phone' => 'Телефон',
+            'avatar' => 'Аватарка',
+            'new_password' => 'Новый пароль',
+            'new_password_repeat' => 'Новый пароль еще раз',
+            'old_password' => 'Старый пароль'
+        ];
+
+    }
+
+    public static function setLastLogin(){
+        $user = self::findOne(Yii::$app->user->getId());
+        $user->last_login = date('Y-m-d H:i:s');
+        $user->save();
+    }
+
+    public static function activateUser($id){
+        $user = self::findOne($id);
+        if(!is_null($user)){
+            $user->status = true;
+            if($user->save()){
+                return true;
+            }else{
+                return false;
+            }
+        }return false;
+    }
+
+    public static function deactivateUser($id){
+        $user = self::findOne($id);
+        if(!is_null($user)){
+            $user->status = false;
+            if($user->save()){
+                return true;
+            }else{
+                return false;
+            }
+        }return false;
+    }
+
 }

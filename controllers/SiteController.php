@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -15,6 +16,9 @@ use app\models\Tiket;
 use app\controllers\BehaviorsController;
 use yii\web\UploadedFile;
 use yii\helpers\Url;
+use app\models\UsersSearch;
+use kartik\alert\Alert;
+
 class SiteController extends BehaviorsController
 {
 
@@ -45,6 +49,7 @@ class SiteController extends BehaviorsController
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            User::setLastLogin();
             return $this->goHome();
         }
         return $this->render('login', [
@@ -62,15 +67,17 @@ class SiteController extends BehaviorsController
         
         $model = new RegForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-                $user = $model->reg();
-                return $this->redirect(['register']);
+                if(!is_null($model->reg())){
+                    return $this->redirect('/site/login');
+                }
+
         }
         return $this->render('register', [
             'model' => $model,
         ]);
     }    
 
-    public function actionContact()
+    /*public function actionContact()
     {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
@@ -119,7 +126,7 @@ class SiteController extends BehaviorsController
         
         return $this->render("emptyk");
     }    
-    
+    */
     public function actionKlient() {        
         $klient = new Klient;                     
         
@@ -127,7 +134,7 @@ class SiteController extends BehaviorsController
         
         return $this->render("klient", array("data"=>$data));        
     }    
-    
+    /*
     public function actionEzakaz() {        
         $id = Yii::$app->request->get("id");        
         $model = new Zakaz;
@@ -158,6 +165,7 @@ class SiteController extends BehaviorsController
         
             return $this->render("ezakaz", ["data" => $data, "ss" => 0, 'model' => $zakaz]);
     }
+    */
     public function actionEklient() {         
         $id = Yii::$app->request->get("id");        
         $model = new Klient;
@@ -176,7 +184,7 @@ class SiteController extends BehaviorsController
         
         return $this->render("eklient", ["data" => $data]);        
     }
-
+/*
     public function actionTiket(){            
         
         $id = Yii::$app->request->get("id");
@@ -190,15 +198,59 @@ class SiteController extends BehaviorsController
         
             return $this->render("tiket", ["data"=>$data]);
     }
-    
+    */
     public function actionUserprofile() {
-        if (Yii::$app->request->post()) {
-            $p = Yii::$app->request->post('login');
-            $p1 = Yii::$app->request->post('pass');
-            $p2 = Yii::$app->request->post('avatar-field');
-            echo $p2;
+        $user = User::find()->where(['id' => Yii::$app->user->getId()])->one();
+        if($user->load(Yii::$app->request->post()) && $user->validate()){
+            if($user->editProfile()){
+                return $this->redirect('/site/userprofile');
+            }
         }
-        return $this->render('userprofile');
+
+        return $this->render('userprofile', [
+            'user' => $user,
+        ]);
+    }
+
+    public function actionManageProfile(){
+        $searchModel = new UsersSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->get());
+        return $this->render('manage-index', [
+           'searchModel' => $searchModel,
+           'dataProvider' => $dataProvider,
+        ]);
+    }
+    
+    public function actionActivateUser($id = null){
+        if(!is_null($id)){
+            if(User::activateUser($id)){
+                Yii::$app->session->setFlash(Alert::TYPE_SUCCESS, 'Пользователь активирован!');
+                return $this->redirect('/site/manage-profile');
+            }else{
+                Yii::$app->session->setFlash(Alert::TYPE_DANGER, 'Произошла ошибка');
+                return $this->redirect('/site/manage-profile');
+            }
+            
+        }else{
+            Yii::$app->session->setFlash(Alert::TYPE_DANGER, 'Отсутствует обязательный параметр id');
+            return $this->redirect('/site/manage-profile');
+        }
+    }
+
+    public function actionDeactivateUser($id = null){
+        if(!is_null($id)){
+            if(User::deactivateUser($id)){
+                Yii::$app->session->setFlash(Alert::TYPE_SUCCESS, 'Пользователь деактивирован!');
+                return $this->redirect('/site/manage-profile');
+            }else{
+                Yii::$app->session->setFlash(Alert::TYPE_DANGER, 'Произошла ошибка');
+                return $this->redirect('/site/manage-profile');
+            }
+
+        }else{
+            Yii::$app->session->setFlash(Alert::TYPE_DANGER, 'Отсутствует обязательный параметр id');
+            return $this->redirect('/site/manage-profile');
+        }
     }
 
     public function actionAbout()
