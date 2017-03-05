@@ -8,13 +8,12 @@ use app\models\TiketSearch;
 use Yii;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
+use kartik\alert\Alert;
 class TiketsController extends BehaviorsController{
 
-    public $session;
 
     public function actions()
     {
-        $this->session = Yii::$app->session;
         $this->layout = "wpLayout";
         return [
             'error' => [
@@ -36,7 +35,11 @@ class TiketsController extends BehaviorsController{
         $success = NULL;
         if($tiket->load(Yii::$app->request->post()) && $tiket->validate()){
             if($tiket->saveTiket($tiket->zakaz_id)){
-                $success = 'Задача успешно добавлена!';
+                Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Задача успешно добавлена!');
+                return $this->redirect('/tikets/index');
+            }else{
+                Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Произошла ошибка');
+                return $this->redirect('/tikets/index');
             }
 
         }
@@ -45,7 +48,7 @@ class TiketsController extends BehaviorsController{
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'tiket' => $tiket,
-            'success' => $success,
+
         ]);
     }
 
@@ -57,14 +60,14 @@ class TiketsController extends BehaviorsController{
                 $tchat->uploadFile = UploadedFile::getInstance($tchat, 'uploadFile');
                 if(is_null($tchat->uploadFile)){
                     if($tchat->saveMessage($id)){
-                        $this->session->setFlash('message', 'Сообщение успешно добавлено!');
+                        Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Сообщение успешно добавлено!');
                         return $this->redirect(['/tikets/view', 'id' => $id]);
                     }else{
                         return $this->redirect(['/tikets/view', 'id' => $id]);
                     }
                 }else{
                     if($tchat->upload($tiket->zakaz->projectname, $id)){
-                        $this->session->setFlash('message', 'Сообщение успешно добавлено!');
+                        Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Сообщение успешно добавлено!');
                         return $this->redirect(['/tikets/view', 'id' => $id]);
                     }else{
                         return $this->redirect(['/tikets/view', 'id' => $id]);
@@ -75,7 +78,6 @@ class TiketsController extends BehaviorsController{
             return $this->render('view', [
                 'tiket' => $tiket,
                 'tchat' => $tchat,
-                'session' => $this->session,
             ]);
         }else{
             return $this->redirect('/tikets/index');
@@ -86,6 +88,7 @@ class TiketsController extends BehaviorsController{
         if(!is_null($id)){
             $zakazId = Tiket::closeTiket($id);
             if($zakazId){
+                Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Задача # '.$id.' выполнена!' );
                 return $this->redirect(Url::to(['/projects/view', 'id' => $zakazId]));
             }
         }

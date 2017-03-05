@@ -10,9 +10,9 @@ use app\models\User;
 use app\models\Zakaz;
 
 $this->title = 'Задачи';
-?>
-<?php
-echo (!is_null($success)) ?  "<div class='text-success'>$success</div>" : '';
+
+$authManager = \Yii::$app->getAuthManager();
+
 ?>
 
 

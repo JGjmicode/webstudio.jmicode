@@ -1,9 +1,10 @@
 <?php
 use kartik\alert\Alert;
 ?>
-<?php foreach(Yii::$app->session->getAllFlashes() as $type => $message): ?>
+<?php foreach(Yii::$app->session->getAllFlashes() as $type => $messages): ?>
         <?php
-        switch ($type){
+    foreach ($messages as $message) {
+        switch ($type) {
             case Alert::TYPE_SUCCESS:
                 echo Alert::widget([
                     'type' => Alert::TYPE_SUCCESS,
@@ -25,6 +26,6 @@ use kartik\alert\Alert;
                 ]);
                 break;
         }
-
+    }
         ?>
     <?php endforeach ?>

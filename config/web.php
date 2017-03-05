@@ -12,6 +12,9 @@ $config = [
             'showScriptName' => false,
             'enablePrettyUrl' => true,
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
         'request' => [
 
             'cookieValidationKey' => '55544666444',

@@ -9,12 +9,10 @@ class Tchat extends \yii\db\ActiveRecord{
     public $uploadFile;
     
     public function getUsers() {
-        return $this->hasOne(Users::className(), ["id"=>"user_id"]);
+        return $this->hasOne(User::className(), ["id"=>"user_id"]);
     }    
 
-    /*function getTchat () {
-        return Tiket::find()->joinWith("users")->all();
-    }*/
+
 
     public function rules()
     {

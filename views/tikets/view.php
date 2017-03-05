@@ -8,25 +8,13 @@ use app\models\FileTypesIcons;
 $this->title = 'Задача  # '. $tiket->id .' к проекту ' .$tiket->zakaz->projectname;
 ?>
 
-<?php
-if($session->has('message')) {
-    echo Alert::widget([
-        'type' => Alert::TYPE_SUCCESS,
-        'title' => 'Well done!',
-        'icon' => 'glyphicon glyphicon-ok-sign',
-        'body' => $session->getFlash('message'),
-        'showSeparator' => true,
-        'delay' => 2000
-    ]);
-}
-
-?>
 <?=Html::tag('h2', 'Задача  # '. $tiket->id .' к проекту ' .$tiket->zakaz->projectname, ['class' => 'text-center'])?>
 <div class="container">
 
-          <h4 class="col-md-3"><?= yii\helpers\Html::a("Вернуться к проекту", Url::to(["projects/view", "id"=>$tiket->zakaz_id]), ["class"=>"label label-default"]) ?></h4>
+          <h4 class="col-md-2"><?= yii\helpers\Html::a("Вернуться к проекту", Url::to(["projects/view", "id"=>$tiket->zakaz_id]), ["class"=>"label label-default"]) ?></h4>
             <h4 class="col-md-3">Приоритет: <?=(!is_null($tiket->priority)) ? $tiket->priority->priority : 'отсутствует'?></h4>
             <h4 class="col-md-3">Дэдлайн: <?=(!is_null($tiket->dead_line)) ? $tiket->dead_line : 'отсутствует'?></h4>
+            <h4 class="col-md-4">Исполнитель: <?=(!is_null($tiket->performer)) ? $tiket->performer->name : 'отсутствует'?></h4>
             <div class="clearfix"></div>
             <?php
                 if(!$tiket->active){

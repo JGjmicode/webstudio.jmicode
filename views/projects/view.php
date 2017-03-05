@@ -13,19 +13,7 @@ use app\models\FileTypesIcons;
 
 $this->title = 'Проект #'. $zakaz->id;
 ?>
-<?php
-    if($session->has('message')) {
-        echo Alert::widget([
-            'type' => Alert::TYPE_SUCCESS,
-            'title' => 'Well done!',
-            'icon' => 'glyphicon glyphicon-ok-sign',
-            'body' => $session->getFlash('message'),
-            'showSeparator' => true,
-            'delay' => 2000
-        ]);
-    }
 
-?>
 
 <div class="container">
 
@@ -148,7 +136,7 @@ $this->title = 'Проект #'. $zakaz->id;
                         echo "<tr>";
                         echo "<td>".$val->des."</td>";
                         echo "<td>";
-                        echo Html::a(Html::img((FileTypesIcons::getIcon($val->type)) ? FileTypesIcons::getIcon($val->type) : '/img/icon-files/Default.png' ,['alt' => $val->name,'width' => '35px']), $val->path);
+                        echo Html::a(Html::img((FileTypesIcons::getIcon($val->type)) ? FileTypesIcons::getIcon($val->type) : '/img/icon-files/Default.png' ,['alt' => $val->name,'width' => '35px']), $val->path, ['target' => '_blanc']);
                         echo "</td>";
                         echo "<td>X</td>";
                         echo "</tr>";

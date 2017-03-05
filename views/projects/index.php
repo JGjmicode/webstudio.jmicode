@@ -7,19 +7,7 @@ use kartik\alert\Alert;
 
 $this->title = 'Проекты';
 ?>
-<?php
-if($session->has('message')) {
-    echo Alert::widget([
-        'type' => Alert::TYPE_SUCCESS,
-        'title' => 'Well done!',
-        'icon' => 'glyphicon glyphicon-ok-sign',
-        'body' => $session->getFlash('message'),
-        'showSeparator' => true,
-        'delay' => 2000
-    ]);
-}
 
-?>
 <h2 align="center">Список проектов</h2>
 <?= Html::a('Очистить фильтры', ['index'], ['class' => 'btn btn-info']) ?>
 <?= Html::a('Добавить проект', ['/projects/add'], ["class" => "btn btn-default btn-left"]) ?>

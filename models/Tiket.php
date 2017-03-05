@@ -2,6 +2,8 @@
 
 namespace app\models;
 use Yii;
+use app\models\Zakaz;
+use kartik\alert\Alert;
 class Tiket extends \yii\db\ActiveRecord{
 
     const STATUS_ACTIVE = 1;
@@ -25,31 +27,22 @@ class Tiket extends \yii\db\ActiveRecord{
     public function getZakaz(){
         return $this->hasOne(Zakaz::className(),['id' => 'zakaz_id']);
     }
-            
-    public function setTiketText($text, $id){
-        $userId = \Yii::$app->user->getId();
-        \Yii::$app->db->createCommand()->insert(
-                'tchat',
-                [
-                   'tiket_id' => $id,
-                    'user_id' => $userId,
-                    'date_add' => date("Y-m-d"),
-                    'txt' => $text,
-                ]
-                )->execute();
-    }
-    
-   function getTiket($id) {
-        return Tiket::find()->joinWith("users")->joinWith("tchat")->where("tiket.id=".$id)->all();
-    }
-    
+
     public function saveTiket($id){
-        $this->date_add = date("Y-m-d");
-        $this->user_id = Yii::$app->user->getId();
-        $this->zakaz_id = $id;
-        if($this->save()){
-            return true;
-        }else return false;
+        if(!Zakaz::findOne($id)->status){
+            $this->date_add = date("Y-m-d");
+            $this->user_id = Yii::$app->user->getId();
+            $this->zakaz_id = $id;
+            if($this->save()){
+                return true;
+            }else {
+                return false;
+            }
+        }else{
+            Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Нельзя добавить задачу в выполненный проект');
+            return false;
+        }
+
 
     }
     

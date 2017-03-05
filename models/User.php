@@ -4,6 +4,7 @@ namespace app\models;
 use yii\web\IdentityInterface;
 use yii\db\ActiveRecord;
 use Yii;
+use kartik\alert\Alert;
 class User extends ActiveRecord implements IdentityInterface{
 
     public $new_password;
@@ -139,7 +140,10 @@ class User extends ActiveRecord implements IdentityInterface{
             }else{
                 return false;
             }
-        }return false;
+        }else{
+            Yii::$app->session->addFlash(\kartik\alert\Alert::TYPE_DANGER, 'Пользователь не найден');
+            return false;
+        }
     }
 
     public static function deactivateUser($id){
@@ -151,7 +155,10 @@ class User extends ActiveRecord implements IdentityInterface{
             }else{
                 return false;
             }
-        }return false;
+        }else{
+            Yii::$app->session->addFlash(\kartik\alert\Alert::TYPE_DANGER, 'Пользователь не найден');
+            return false;
+        }
     }
 
 }
