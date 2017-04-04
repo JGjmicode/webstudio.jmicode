@@ -36,7 +36,7 @@ class ClientController extends BehaviorsController{
             return $this->redirect(['/client/index']);
         }
         $client = new Klient();
-        if($client->load(Yii::$app->request->post()) && $client->save()){
+        if($client->load(Yii::$app->request->post()) && $client->addClient()){
             Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Клиент успешно добавлен!');
             return $this->redirect(['/client/view', 'id' => $client->id]);
         }

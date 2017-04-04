@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models;
+use Yii;
 
 class Klient extends \yii\db\ActiveRecord{
     
@@ -12,6 +13,13 @@ class Klient extends \yii\db\ActiveRecord{
         return $this->hasMany(Zakaz::className(), ["klient_id" => "id"]);
     }
 
+    public function addClient(){
+        $this->create_by = Yii::$app->user->getId();
+        if($this->save()){
+            return true;
+        }
+        return false;
+    }
 
     public function rules()
     {
