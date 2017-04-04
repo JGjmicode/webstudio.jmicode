@@ -11,7 +11,8 @@ class RegForm extends Model
 {
     public $name;
     public $password;
-    public $password_repeat;    
+    public $password_repeat;
+    public $e_mail;
     
     
     /**
@@ -20,6 +21,8 @@ class RegForm extends Model
     public function rules()
     {
         return [
+            [['e_mail'], 'required'],
+            [['e_mail'], 'email'],
             ['name', 'required', 'message' => 'Поле не должно быть пустым'],
             ['password_repeat', 'required', 'message' => 'Поле не должно быть пустым'],
             ['password', 'compare', 'message' => 'Введенные пароли не совпадают'],
@@ -32,6 +35,7 @@ class RegForm extends Model
     {
         $user = new User();
         $user->name = $this->name;
+        $user->e_mail = $this->e_mail;
         $user->setPassword($this->password);
         $user->generateAuthKey();
         

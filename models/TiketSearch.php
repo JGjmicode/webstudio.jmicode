@@ -17,10 +17,10 @@ class TiketSearch extends Tiket{
         return 'tiket';
     }
 
-    public function search($params){
-        
-        $query = Tiket::find();
+    public function search($params)
+    {
 
+        $query = Tiket::find();
 
 
         $dataProvider = new ActiveDataProvider([
@@ -29,7 +29,7 @@ class TiketSearch extends Tiket{
                 'pageSize' => 10,
             ]
         ]);
-        
+
         $query->joinWith('users');
         $query->joinWith('zakaz');
         $query->joinWith('performer performer');
@@ -57,8 +57,10 @@ class TiketSearch extends Tiket{
 
             return $dataProvider;
         }
-
-
+        if ($this->getAttribute('performer.name') == '') {
+            $identity = \Yii::$app->user->identity;
+            $this->setAttribute('performer.name', $identity->name);
+        }
         $query->andFilterWhere(['like', 'zakaz.projectname', $this->getAttribute('zakaz.projectname')])
             ->andFilterWhere(['like', 'users.name', $this->getAttribute('users.name')])
             ->andFilterWhere(['like', 'task_name', $this->getAttribute('task_name')])

@@ -33,7 +33,7 @@ AppAsset::register($this);
             <ul>
                 <li><?= Html::a("Проекты", yii\helpers\Url::toRoute("projects/index")); ?></li>
                 <li><?= Html::a("Клиенты", yii\helpers\Url::toRoute("client/index")); ?></li>
-                <li><?= Html::a("Задачи", yii\helpers\Url::toRoute(["tikets/index", 'TiketSearch[active]' => true])); ?></li>
+                <li><?= Html::a("Задачи ".'('. \app\models\Tiket::getNewTiketForUser() .')', yii\helpers\Url::toRoute(["tikets/index", 'TiketSearch[active]' => true,])); ?></li>
                 <li><?= Html::a("Профиль", yii\helpers\Url::toRoute("site/userprofile")); ?></li>
                 <li><?= Html::a("Профили пользователей", yii\helpers\Url::toRoute("manage/manage-profile")); ?></li>
             </ul>
@@ -55,7 +55,6 @@ AppAsset::register($this);
                 )
                 . Html::endForm();
                     
-                        //echo Html::a(Yii::$app->user->identity->name, yii\helpers\Url::toRoute("site/logout"));
                 }
                 ?>
                 

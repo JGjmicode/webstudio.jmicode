@@ -25,7 +25,9 @@ $this->title = 'Регистрация нового пользователя';
 
         <?= $form->field($model, 'password_repeat')->passwordInput()->label('Пароль') ?>
     
-        <?= $form->field($model, 'password')->passwordInput()->label('Пароль') ?>
+        <?= $form->field($model, 'password')->passwordInput()->label('Пароль еще раз') ?>
+
+        <?= $form->field($model, 'e_mail')->passwordInput()->label('E-Mail') ?>
 
     </div>
         <div class="form-group">

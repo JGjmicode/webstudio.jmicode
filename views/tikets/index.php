@@ -25,13 +25,19 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'rowOptions' => function ($model) {
+        $class = '';
         if (!is_null($model->priority)) {
             if (!is_null($model->priority->class)) {
-                return ['class' => $model->priority->class];
-            }else return ['class' => 'info'];
+                $class = $model->priority->class;
+            }else $class = 'info';
         }else{
-            return ['class' => 'info'];
+            $class = 'info';
         }
+        if(!$model->status){
+            $class .= ' '. 'text-danger font-bold';
+        }
+        return ['class' => $class];
+
     }    ,
     'columns' => [
         ['attribute' => 'id'],

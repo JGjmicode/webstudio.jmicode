@@ -34,6 +34,9 @@ class Tiket extends \yii\db\ActiveRecord{
             $this->user_id = Yii::$app->user->getId();
             $this->zakaz_id = $id;
             if($this->save()){
+                if(!is_null(User::findOne($this->performer_id)->e_mail)) {
+                    $this->sendMessageNewTiket();
+                }
                 return true;
             }else {
                 return false;
@@ -59,8 +62,8 @@ class Tiket extends \yii\db\ActiveRecord{
 
     public function rules()    {
         return [
-            [['task_name', 'task_des', 'zakaz_id'], 'required'],
-            [['priority_id', 'performer_id', 'dead_line'], 'default'],
+            [['task_name', 'task_des', 'zakaz_id', 'performer_id'], 'required'],
+            [['priority_id', 'dead_line'], 'default'],
         ];
     }
     
@@ -77,6 +80,31 @@ class Tiket extends \yii\db\ActiveRecord{
             'date_add' => 'Создана',
             'zakaz_id' => 'Проект',
         ];
+    }
+
+    public function sendMessageNewTiket(){
+        $priority = !is_null($this->priority_id) ? Priority::findOne($this->priority_id)->priority. PHP_EOL : 'отсутствует'. PHP_EOL;
+        $message = 'Заголовок: ' . $this->task_name. PHP_EOL;
+        $message .= 'Описание: ' . $this->task_des. PHP_EOL;
+        $message .= 'Кем добавлена: ' . User::findOne($this->user_id)->name. PHP_EOL;
+        $message .= 'Название проекта: ' . Zakaz::findOne($this->zakaz_id)->projectname. PHP_EOL;
+        $message .= 'Приоритет: '. $priority;
+        $message .= 'Дата создания: ' . $this->date_add. PHP_EOL;
+        $message .= 'Крайний срок: ' . $this->dead_line. PHP_EOL;
+        Yii::$app->mailer->compose()
+            ->setTo(User::findOne($this->performer_id)->e_mail)
+            ->setSubject('Новая задача для проекта '. Zakaz::findOne($this->zakaz_id)->projectname)
+            ->setTextBody($message)
+            ->send();
+    }
+    
+    public function setViewed(){
+        $this->status = true;
+        $this->save();
+    }
+    
+    public static function getNewTiketForUser(){
+        return self::find()->where(['status' => false, 'performer_id' => Yii::$app->user->getId()])->count();
     }
 
 

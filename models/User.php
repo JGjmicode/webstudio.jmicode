@@ -124,6 +124,7 @@ class User extends ActiveRecord implements IdentityInterface{
     public function rules()
     {
         return [
+            [['e_mail'], 'required'],
             [['new_password_repeat', 'name', 'skype', 'e_mail', 'phone', 'avatar', 'reset_password_repeat'], 'default'],
             [['new_password', 'reset_password'], 'compare', 'message' => 'Введенные пароли не совпадают'],
             [['change_password', 'reset_user_password'], 'safe'],

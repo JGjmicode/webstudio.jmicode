@@ -63,6 +63,9 @@ class TiketsController extends BehaviorsController{
                 Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Нет прав на просмотр задачи!');
                 return $this->redirect('/tikets/index');
             }
+            if(!$tiket->status && $tiket->performer_id == Yii::$app->user->getId()){
+                $tiket->setViewed();
+            }
             if($tchat->load(Yii::$app->request->post()) && $tchat->validate()) {
                 $tchat->uploadFile = UploadedFile::getInstance($tchat, 'uploadFile');
                 if(is_null($tchat->uploadFile)){
