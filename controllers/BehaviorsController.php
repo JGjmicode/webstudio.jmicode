@@ -40,8 +40,22 @@ class BehaviorsController extends Controller{
                     ],
                     [
                         'allow' => true,
+                        'controllers' => ['manage'],
+                        'verbs' => ['GET', 'POST'],
+                        'roles' => ['admin'],
+                    ],
+                    [
+                        'allow' => false,
+                        'controllers' => ['manage'],
+                        'verbs' => ['GET', 'POST'],
                         'roles' => ['@'],
                     ],
+
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+
                     
                 ]
             ]

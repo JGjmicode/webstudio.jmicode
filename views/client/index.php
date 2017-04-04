@@ -9,7 +9,7 @@ $this->title = 'Список клиентов';
     <div class="toolbar clearfix">
         <?= Html::a("Добавить", \yii\helpers\Url::to(["client/add"]), ["class" => "btn btn-success btn-right"]); ?>
     </div>
-    <table class="table table-striped table-zakaz">
+    <table class="table table-striped table-client">
         <tr>
             <th>#</th>
             <th>Наименование</th>

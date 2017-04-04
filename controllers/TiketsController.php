@@ -32,16 +32,19 @@ class TiketsController extends BehaviorsController{
         $searchModel = new TiketSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->get());
         $tiket = new Tiket();
-        $success = NULL;
         if($tiket->load(Yii::$app->request->post()) && $tiket->validate()){
-            if($tiket->saveTiket($tiket->zakaz_id)){
-                Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Задача успешно добавлена!');
-                return $this->redirect('/tikets/index');
+            if(Yii::$app->user->can('createTiket', ['zakaz_id' => $tiket->zakaz_id])) {
+                if ($tiket->saveTiket($tiket->zakaz_id)) {
+                    Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Задача успешно добавлена!');
+                    return $this->redirect('/tikets/index');
+                } else {
+                    Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Произошла ошибка');
+                    return $this->redirect('/tikets/index');
+                }
             }else{
-                Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Произошла ошибка');
+                Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Нет прав на добавление задачи!');
                 return $this->redirect('/tikets/index');
             }
-
         }
         
         return $this->render('index',[
@@ -56,6 +59,10 @@ class TiketsController extends BehaviorsController{
         if(!is_null($id)){
             $tiket = Tiket::findOne($id);
             $tchat = new Tchat();
+            if(!Yii::$app->user->can('viewTiket', ['zakaz_id' => $tiket->zakaz_id])) {
+                Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Нет прав на просмотр задачи!');
+                return $this->redirect('/tikets/index');
+            }
             if($tchat->load(Yii::$app->request->post()) && $tchat->validate()) {
                 $tchat->uploadFile = UploadedFile::getInstance($tchat, 'uploadFile');
                 if(is_null($tchat->uploadFile)){
@@ -86,6 +93,10 @@ class TiketsController extends BehaviorsController{
 
     public function actionCloseTiket($id = NULL){
         if(!is_null($id)){
+            if(!Yii::$app->user->can('closeTiket', ['tiket_id' => $id])) {
+                Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Нет прав на закрытие задачи!');
+                return $this->redirect(['/tikets/view', 'id' => $id]);
+            }
             $zakazId = Tiket::closeTiket($id);
             if($zakazId){
                 Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Задача # '.$id.' выполнена!' );

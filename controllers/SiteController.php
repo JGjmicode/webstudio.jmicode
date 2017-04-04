@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Permissions;
 use app\models\User;
 use Yii;
 use app\models\LoginForm;
@@ -10,6 +11,7 @@ use app\models\ContactForm;
 use app\controllers\BehaviorsController;
 use app\models\UsersSearch;
 use kartik\alert\Alert;
+use yii\helpers\ArrayHelper;
 
 class SiteController extends BehaviorsController
 {
@@ -102,46 +104,7 @@ class SiteController extends BehaviorsController
         ]);
     }
 
-    public function actionManageProfile(){
-        $searchModel = new UsersSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->get());
-        return $this->render('manage-index', [
-           'searchModel' => $searchModel,
-           'dataProvider' => $dataProvider,
-        ]);
-    }
     
-    public function actionActivateUser($id = null){
-        if(!is_null($id)){
-            if(User::activateUser($id)){
-                Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Пользователь активирован!');
-                return $this->redirect('/site/manage-profile');
-            }else{
-                Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Произошла ошибка');
-                return $this->redirect('/site/manage-profile');
-            }
-            
-        }else{
-            Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Отсутствует обязательный параметр id');
-            return $this->redirect('/site/manage-profile');
-        }
-    }
-
-    public function actionDeactivateUser($id = null){
-        if(!is_null($id)){
-            if(User::deactivateUser($id)){
-                Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Пользователь деактивирован!');
-                return $this->redirect('/site/manage-profile');
-            }else{
-                Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Произошла ошибка');
-                return $this->redirect('/site/manage-profile');
-            }
-
-        }else{
-            Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Отсутствует обязательный параметр id');
-            return $this->redirect('/site/manage-profile');
-        }
-    }
 
     public function actionAbout()
     {

@@ -9,6 +9,8 @@ use yii\helpers\Url;
 use kartik\alert\Alert;
 use app\models\Zakaz;
 use app\models\FileTypesIcons;
+use kartik\select2\Select2;
+use yii\web\JsExpression;
 
 
 $this->title = 'Проект #'. $zakaz->id;
@@ -91,18 +93,74 @@ $this->title = 'Проект #'. $zakaz->id;
 
     </div>
     <div class="col-md-6">
-        <h4><a href="<?= Url::to(['/tikets/index', 'TiketSearch[zakaz.projectname]' => $zakaz->projectname])?>">Тикеты <span class="badge"><?= count($zakaz->tiket) ?></span></a></h4>
-        <div class="list-group">
-            <?php
-            foreach ($zakaz->tiket as $val):
-                if(!$val->active){
-                    $tiketClose =  "<img class='tiket-avatar' src='/img/done.png'></img> <time>".date_format(DateTime::createFromFormat("Y-m-d", $val->date_close), "d-m-Y")."</time>";
-                }else $tiketClose = '';
-                echo Html::a("<img class='tiket-avatar' src='/".app\models\User::findIdentity($val->user_id)['avatar']."'></img> "
-                    .$val->task_name." <time>".date_format(DateTime::createFromFormat("Y-m-d", $val->date_add), "d-m-Y")."</time>".$tiketClose,
-                    \yii\helpers\Url::to(["tikets/view", "id"=>$val->id]), ["class"=>'list-group-item']);
-            endforeach;
-            ?>
+        <div id="tikets">
+            <h4><a href="<?= Url::to(['/tikets/index', 'TiketSearch[zakaz.projectname]' => $zakaz->projectname])?>">Тикеты <span class="badge"><?= count($zakaz->tiket) ?></span></a></h4>
+            <div class="list-group">
+                <?php
+                foreach ($zakaz->tiket as $val):
+                    if(!$val->active){
+                        $tiketClose =  "<img class='tiket-avatar' src='/img/done.png'></img> <time>".date_format(DateTime::createFromFormat("Y-m-d", $val->date_close), "d-m-Y")."</time>";
+                    }else $tiketClose = '';
+                    echo Html::a("<img class='tiket-avatar' src='/".app\models\User::findIdentity($val->user_id)['avatar']."'></img> "
+                        .$val->task_name." <time>".date_format(DateTime::createFromFormat("Y-m-d", $val->date_add), "d-m-Y")."</time>".$tiketClose,
+                        \yii\helpers\Url::to(["tikets/view", "id"=>$val->id]), ["class"=>'list-group-item']);
+                endforeach;
+                ?>
+            </div>
+        </div>
+        <div id="related-user">
+            <div class="col-md-6">
+                <table>
+                    <tr>
+                        <th class="related-user-name">Имя</th>
+                        <th class="related-user-delete">Удалить</th>
+                    </tr>
+                <?php
+                    foreach ($zakaz->relatedUsers as $relatedUser){
+                        echo '<tr>';
+                        echo '<td class="related-user-name">';
+                        echo $relatedUser->name;
+                        echo '</td>';
+                        echo '<td class="related-user-delete">';
+                        echo Html::a('<span class=" glyphicon glyphicon-remove"></span>', ['/projects/remove-related-user', 'zakaz_id' => $zakaz->id, 'user_id' => $relatedUser->id],
+                        ['title' => Yii::t('yii', 'Удалить'), 'data-pjax' => '0']);
+
+                        echo '</td>';
+                        echo '</tr>';
+                    }
+                ?>
+                </table>    
+            </div>
+            <div class="col-md-6">
+                <?php
+                $url = Url::to(['/projects/get-users']);
+                    $zakazRelateForm = ActiveForm::begin(['action' => '/projects/add-related-user']);
+                ?>
+                <?=$zakazRelateForm->field($zakazRelate, 'zakaz_id')->hiddenInput(['value' => $zakaz->id])->label(false)?>
+                <?=$zakazRelateForm->field($zakazRelate, 'user_id')->widget(Select2::classname(), [
+                    'initValueText' => 'asdasdasd', // set the initial display text
+                    'options' => ['placeholder' => 'Найти пользователей ...'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'minimumInputLength' => 2,
+                        'language' => [
+                            'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                        ],
+                        'ajax' => [
+                            'url' => $url,
+                            'dataType' => 'json',
+                            'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                        ],
+                        //'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                        //'templateResult' => new JsExpression('function(city) { return city.text; }'),
+                        //'templateSelection' => new JsExpression('function (city) { return city.text; }'),
+                    ],
+                ])->label(false)?>
+                <?= Html::submitButton('Добавить', ["class" => "btn btn-default btn-left"]) ?>
+                <?php
+                    ActiveForm::end();
+                ?>
+            </div>
         </div>
     </div>
     <?php
@@ -112,7 +170,7 @@ $this->title = 'Проект #'. $zakaz->id;
     ]);?>
     <?= Html::hiddenInput('zakaz_id', $zakaz->id) ?>
     <?php ActiveForm::end() ?>
-    <?php if($zakaz->status == 0){?>
+    <?php if($zakaz->status == 0 && $editProject){?>
         <!-- Скрыть кнопки если проект закрыт-->
         <div class="col-md-12">
             <?= Html::submitButton('Закрыть проект', ["class" => "btn btn-success btn-left", "form" => "close-project-form"]) ?>
@@ -145,7 +203,7 @@ $this->title = 'Проект #'. $zakaz->id;
                 </table>
             </div>
         </div>
-        <?php if($zakaz->status == 0){?>
+        <?php if($zakaz->status == 0 && $editProject){?>
             <!-- Скрыть форму добавления файлов если проект закрыт-->
             <div class="upload-files">
                 <?php $uploadForm = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
@@ -178,7 +236,7 @@ $this->title = 'Проект #'. $zakaz->id;
             <?php endforeach; ?>
         </table>
         <div>Остаток: <span class="rest">0</span> руб.</div>
-        <?php if($zakaz->status == 0){?>
+        <?php if($zakaz->status == 0 && $editProject){?>
             <!-- Скрыть кнопку добавления оплаты если проект закрыт-->
             <?= Html::button('Оплата', ["id"=>"btn-pay", "class" => "btn btn-default btn-right"]) ?>
         <?php }?>
@@ -223,8 +281,7 @@ $this->title = 'Проект #'. $zakaz->id;
                 <?php $tiketForm = ActiveForm::begin(); ?>
                 <?= $tiketForm->field($tiket, 'task_name')?>
                 <?= $tiketForm->field($tiket, 'task_des')?>
-                <?= $tiketForm->field($tiket, 'zakaz_id')->dropDownList(Zakaz::find()->select(['projectname', 'id'])->indexBy('id')->column(),
-                    ['prompt' => 'Выберите проект'])?>
+                <?= $tiketForm->field($tiket, 'zakaz_id')->hiddenInput(['value' => $zakaz->id])->label(false, ['style'=>'display:none'])?>
                 <?= $tiketForm->field($tiket, 'priority_id')->dropDownList(Priority::find()->select(['priority', 'id'])->indexBy('id')->column(),
                     ['prompt' => 'Выберите приоритет'])?>
                 <?= $tiketForm->field($tiket, 'performer_id')->dropDownList(User::find()->select(['name', 'id'])->indexBy('id')->column(),

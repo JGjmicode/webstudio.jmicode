@@ -1,45 +1,35 @@
 <?php
 namespace app\models;
+use Yii;
 
 class Zakaz extends \yii\db\ActiveRecord {
     
 
-    public function uploadFiles($file, $desc, $id) {
-        $filePath = 'upload/';
-        $date = strtotime('now');
-        $fileName = 'P'.$id.'-'.$date.'_'.$file->name;
-        $file->saveAs($filePath.$fileName);
-        
-        \Yii::$app->db->createCommand()->insert(
-                'zakazfiles',
-                [
-                    'zakaz_id' => $id,
-                    'path' => $filePath.$fileName,
-                    'name' => $fileName,
-                    'des' => $desc
-                ])->execute();
-    }
-    
-    public function setZakazPay($sum, $date, $prim, $id) {  
-        \Yii::$app->db->createCommand()->insert(
-                'oplata',
-                [
-                   'zakaz_id' => $id,
-                    'oplata' => $sum,
-                    'date_opl' => date_format(\DateTime::createFromFormat("d-m-Y", $date), "Y-m-d"),
-                    'prim' => $prim,
-                ]
-                )->execute();                        
-    }
-
     public static function closeZakaz($id){
         $zakaz = self::findOne($id);
         $zakaz->status = true;
+        $zakaz->date_end = date("Y-m-d");
         if($zakaz->save()){
             return true;
         }else {
             return false;
         }
+    }
+
+    public function addProject(){
+        $this->create_by = Yii::$app->user->getId();
+
+        if($this->save()){
+            $related = new ZakazRelate();
+            $related->zakaz_id = $this->id;
+            $related->user_id = Yii::$app->user->getId();
+            if($related->save()){
+                return true;
+            }else{
+                return false;
+            }
+            
+        }return false;
     }
 
 
@@ -59,23 +49,12 @@ class Zakaz extends \yii\db\ActiveRecord {
         return $this->hasMany(Zakazfiles::className(), ["zakaz_id" => "id"]);
     }
 
-    /*function getTab1() {
-        return Zakaz::find()->joinWith("klient")->joinWith("tiket")->all();
+    public function getRelatedUsers()
+    {
+        return $this->hasMany(User::className(), ['id' => 'user_id'])
+            ->viaTable('zakaz_relate', ['zakaz_id' => 'id']);
     }
-    
-    function getZakaz($id) {
-        return Zakaz::find()->joinWith("klient")->joinWith("tiket")->joinWith("oplata")->joinWith("zakazfiles")->where("zakaz.id=".$id)->all();
-    }
-            
-    function getTab() {
-        $query = new \yii\db\Query();
-        $query->addSelect(["zakaz.id", "klient.name", "projectname", "date_start", "date_end", "dead_line", "zakaz.prim"])
-                ->from(Zakaz::tableName())
-                ->leftJoin(Klient::tableName(), "zakaz.klient_id=klient.id")
-                ->where("status=0");
-        return $query->all();
-    }
-    */
+
     public function attributeLabels() {
         
         return array(

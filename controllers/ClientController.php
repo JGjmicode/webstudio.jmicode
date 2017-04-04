@@ -31,6 +31,10 @@ class ClientController extends BehaviorsController{
     }
 
     public function actionAdd(){
+        if(!Yii::$app->user->can('createClient')) {
+            Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Нет прав на добавление клиента!');
+            return $this->redirect(['/client/index']);
+        }
         $client = new Klient();
         if($client->load(Yii::$app->request->post()) && $client->save()){
             Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Клиент успешно добавлен!');
@@ -46,13 +50,23 @@ class ClientController extends BehaviorsController{
             $client = Klient::findOne($id);
             $contact = new Kontakt();
 
-            if($client->load(Yii::$app->request->post()) && $client->save()){
-                Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Изменения сохранены!');
-                return $this->redirect(['/client/view', 'id' => $id]);
+            if($client->load(Yii::$app->request->post()) && $client->validate()){
+                if(Yii::$app->user->can('editClient', ['id' => $id]) && $client->save()){
+                    Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Изменения сохранены!');
+                    return $this->redirect(['/client/view', 'id' => $id]);
+                }else{
+                    Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Нет прав на редактирование данных клиента!');
+                    return $this->redirect(['/client/view', 'id' => $id]);
+                }
             }
-            if($contact->load(Yii::$app->request->post()) && $contact->save()){
-                Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Контакт успешно добавлен!');
-                return $this->redirect(['/client/view', 'id' => $id]);
+            if($contact->load(Yii::$app->request->post()) && $client->validate()){
+                if(Yii::$app->user->can('editClient', ['id' => $id]) && $contact->save()) {
+                    Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Контакт успешно добавлен!');
+                    return $this->redirect(['/client/view', 'id' => $id]);
+                }else{
+                    Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Нет прав на редактирование данных клиента!');
+                    return $this->redirect(['/client/view', 'id' => $id]);
+                }
             }
 
             return $this->render('view', [
@@ -76,8 +90,13 @@ class ClientController extends BehaviorsController{
             return false;
         }
     }
+
     public function actionDeleteContact($contact_id = NULL, $client_id = NULL){
         if(!is_null($contact_id) && !is_null($client_id)){
+            if(!Yii::$app->user->can('editClient', ['id' => $client_id])){
+                Yii::$app->session->addFlash(Alert::TYPE_DANGER, 'Нет прав на удаление контакта!');
+                return $this->redirect(['/client/view', 'id' => $client_id]);
+            }
             if(Kontakt::deleteContact($contact_id)){
                 Yii::$app->session->addFlash(Alert::TYPE_SUCCESS, 'Контакт успешно удален!');
                 return $this->redirect(['/client/view', 'id' => $client_id]);

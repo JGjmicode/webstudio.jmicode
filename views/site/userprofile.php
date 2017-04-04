@@ -22,9 +22,10 @@ $this->title = 'Редактирование профиля';
         <?=$userEdit->field($user, 'skype')?>
         <?=$userEdit->field($user, 'phone')?>
         <?=$userEdit->field($user, 'e_mail')?>
+        <?=$userEdit->field($user, 'change_password')->checkbox(['id' => 'checkbox-change-pass', 'value' => 0])?>
         <?=$userEdit->field($user, 'old_password')->passwordInput()?>
-        <?=$userEdit->field($user, 'new_password_repeat')->passwordInput()?>
         <?=$userEdit->field($user, 'new_password')->passwordInput()?>
+        <?=$userEdit->field($user, 'new_password_repeat')->passwordInput()?>
         <?=$userEdit->field($user, 'avatar')->hiddenInput(['class' => 'avatar-field'])->label(false)?>
 
 
@@ -71,3 +72,12 @@ $this->title = 'Редактирование профиля';
     
 </script>
 
+<?php
+    $js = '$("#checkbox-change-pass").click(function(){
+if($("#checkbox-change-pass").val() == "1"){
+    $("#checkbox-change-pass").val(0); 
+}else{
+    $("#checkbox-change-pass").val(1);  
+}});';
+    $this->registerJs($js);
+?>

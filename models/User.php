@@ -10,6 +10,11 @@ class User extends ActiveRecord implements IdentityInterface{
     public $new_password;
     public $new_password_repeat;
     public $old_password;
+    public $reset_password;
+    public $reset_password_repeat;
+    public $change_password;
+    public $reset_user_password;
+
 
     const ACTIVE = 1;
 
@@ -82,11 +87,16 @@ class User extends ActiveRecord implements IdentityInterface{
     }
 
     public function editProfile(){
-        if($this->new_password != '') {
+        if($this->change_password){
             if ($this->validatePassword($this->old_password)) {
                 $this->setPassword($this->new_password);
+            }else{
+                Yii::$app->session->addFlash(\kartik\alert\Alert::TYPE_DANGER, 'Пароль введен неверно!');
+                return false;
             }
         }
+        $this->update_at = date('Y-m-d H:i:s');
+        $this->update_by = Yii::$app->user->getId();
         $pathArray = explode('/', $this->avatar);
         $fileName = array_pop($pathArray);
         $this->avatar = 'img/avatar/'.$fileName;
@@ -97,16 +107,37 @@ class User extends ActiveRecord implements IdentityInterface{
         }
     }
 
+    public function editUserProfile(){
+        if($this->reset_user_password){
+            $this->setPassword($this->reset_password);
+        }
+        $this->update_at = date('Y-m-d H:i:s');
+        $this->update_by = Yii::$app->user->getId();
+
+        if($this->save()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function rules()
     {
         return [
-            [['new_password_repeat', 'name', 'skype', 'e_mail', 'phone', 'avatar'], 'default'],
-            ['new_password', 'compare', 'message' => 'Введенные пароли не совпадают'],
+            [['new_password_repeat', 'name', 'skype', 'e_mail', 'phone', 'avatar', 'reset_password_repeat'], 'default'],
+            [['new_password', 'reset_password'], 'compare', 'message' => 'Введенные пароли не совпадают'],
+            [['change_password', 'reset_user_password'], 'safe'],
+            [['new_password', 'reset_password'], 'string', 'length' => [4, 24]],
             [['e_mail'], 'email'],
-            ['old_password', 'required', 'when' => function ($model) {
-                return $model->new_password != '';
+            [['old_password', 'new_password', 'new_password_repeat'], 'required', 'when' => function ($model) {
+                return $model->change_password == '1';
                 }, 'whenClient' => "function (attribute, value) {
-                return $('#user-new_password').val() != '';
+                return ($('#checkbox-change-pass').val() == '1');
+                }"],
+            [['reset_password_repeat', 'reset_password'], 'required', 'when' => function ($model) {
+                return $model->reset_user_password == '1';
+            }, 'whenClient' => "function (attribute, value) {
+                return ($('#checkbox-reset-pass').val() == '1');
                 }"],
         ];
     }
@@ -120,7 +151,11 @@ class User extends ActiveRecord implements IdentityInterface{
             'avatar' => 'Аватарка',
             'new_password' => 'Новый пароль',
             'new_password_repeat' => 'Новый пароль еще раз',
-            'old_password' => 'Старый пароль'
+            'old_password' => 'Старый пароль',
+            'change_password' => 'Изменить пароль',
+            'reset_password' =>'Новый пароль',
+            'reset_password_repeat' => 'Новый пароль еще раз',
+            'reset_user_password' => 'Изменить пароль',
         ];
 
     }
