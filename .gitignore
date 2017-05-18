@@ -14,8 +14,9 @@ Thumbs.db
 
 # composer vendor dir
 #/vendor
-/config
+
 /web/upload
+/config
 
 # composer itself is not needed
 composer.phar

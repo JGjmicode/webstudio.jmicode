@@ -41,7 +41,7 @@ $this->title = 'Проект #'. $zakaz->id;
                 Заказчик
             </div>
             <div class="col-md-8">
-                <?= yii\helpers\Html::a($zakaz->klient->name, yii\helpers\Url::to(["site/eklient", "id"=>$zakaz->klient_id])); ?>
+                <?= yii\helpers\Html::a($zakaz->klient->name, yii\helpers\Url::to(['/client/view', "id"=>$zakaz->klient_id])); ?>
             </div>
         </div>
         <?= $form->field($zakaz, 'date_start')->widget(DatePicker::classname(), [
@@ -109,6 +109,7 @@ $this->title = 'Проект #'. $zakaz->id;
             </div>
         </div>
         <div id="related-user">
+            <h4>Пользователи проекта</h4>
             <div class="col-md-6">
                 <table>
                     <tr>

@@ -1,9 +1,11 @@
 <?php
 
 namespace app\models;
+use app\models\User;
 use Yii;
 use app\models\Zakaz;
 use kartik\alert\Alert;
+
 class Tiket extends \yii\db\ActiveRecord{
 
     const STATUS_ACTIVE = 1;
@@ -54,6 +56,7 @@ class Tiket extends \yii\db\ActiveRecord{
         $tiket->active = false;
         $tiket->date_close = date("Y-m-d");
         if($tiket->save()){
+            $tiket->sendMessageCloseTiket();
             return $tiket->zakaz_id;
         }else{
             return false;
@@ -105,6 +108,30 @@ class Tiket extends \yii\db\ActiveRecord{
     
     public static function getNewTiketForUser(){
         return self::find()->where(['status' => false, 'performer_id' => Yii::$app->user->getId()])->count();
+    }
+
+    public function sendMessageCloseTiket(){
+        $users = array();
+        if(!is_null($this->performer_id)){
+            $users[] = User::findOne($this->performer_id);
+        }
+        if(!is_null($this->user_id)){
+            $users[] = User::findOne($this->user_id);
+        }
+
+        $messages = array();
+        foreach ($users as $user) {
+            if (!is_null($user->e_mail)) {
+                $messages[] = Yii::$app->mailer->compose('close-tiket-message', [
+                    'id' => $this->id,
+                ])
+                    ->setSubject('Тикету № ' . $this->id . ' закрыт.')
+                    ->setTo($user->e_mail);
+
+            }
+        }
+        Yii::$app->mailer->sendMultiple($messages);
+
     }
 
 

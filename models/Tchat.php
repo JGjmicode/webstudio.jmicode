@@ -3,6 +3,8 @@
 namespace app\models;
 use Yii;
 use dosamigos\transliterator\TransliteratorHelper;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 class Tchat extends \yii\db\ActiveRecord{
 
@@ -82,9 +84,39 @@ class Tchat extends \yii\db\ActiveRecord{
             $this->attach_ext = $attach['attach_ext'];
         }
         if($this->save()){
+            $this->sendEMail();
             return true;
         }else{
             return false;
         }
+    }
+
+    public function sendEMail(){
+
+        $e_mail = $this->getRecipient();
+        if(!is_null($e_mail)) {
+
+            Yii::$app->mailer->compose('tchat-new-message', [
+                'tiket_id' => $this->tiket_id,
+            ])
+                ->setTo($e_mail)
+                ->setSubject('Новое сообщение по тикету № '.$this->tiket_id .'.')
+                ->send();
+        }
+
+    }
+
+    public function getRecipient(){
+        $tiket = Tiket::find()->where(['tiket.id' => $this->tiket_id])->joinWith('performer performer')->joinWith('users')->One();
+        if($tiket->user_id == $this->user_id){
+            if(!is_null($tiket->performer)) {
+                return $tiket->performer->e_mail;
+            }else return NULL;
+        }elseif ($tiket->performer_id == $this->user_id){
+            if(!is_null($tiket->users)) {
+                return $tiket->users->e_mail;
+            }else return NULL;
+        }
+        return NULL;
     }
 }
