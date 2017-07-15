@@ -9,8 +9,10 @@ $this->title = 'Проекты';
 ?>
 
 <h2 align="center">Список проектов</h2>
-<?= Html::a('Очистить фильтры', ['index'], ['class' => 'btn btn-info']) ?>
-<?= Html::a('Добавить проект', ['/projects/add'], ["class" => "btn btn-default btn-left"]) ?>
+<?= Html::beginTag("div", ["class" => "toolbar-panel"]) ?>
+    <?= Html::a("<img src='/img/plus.png' >", ['/projects/add'], ["class" => "btn btn-default btn-left toolbar-button-round"]) ?>
+<!--    --><?//= Html::a('Очистить фильтры', ['index'], ['class' => 'btn btn-info']) ?>
+<?= Html::endTag("div") ?>
 
 
 
@@ -18,8 +20,18 @@ $this->title = 'Проекты';
 
     echo GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+//        'filterModel' => $searchModel,
         'columns' => [
+            ['attribute' => 'status',
+                'format' => 'Html',
+                'value' => function($data) {
+                    if ($data['status'] == "0")
+                        return Html::img("/img/pactive.png");
+                    else
+                        return Html::img("/img/pclose.png");
+                }
+            ],
+            ['attribute' => 'id'],
             ['attribute' => 'projectname'],
             ['attribute' => 'klient.name'],
             ['attribute' => 'date_start',
