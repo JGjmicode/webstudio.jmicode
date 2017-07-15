@@ -58,8 +58,8 @@ class Zakaz extends \yii\db\ActiveRecord {
     public function attributeLabels() {
         
         return array(
-            "id" => "id",
-            
+            "id" => "ID",
+            "status" => "",
             "klient.name" => "Клиент",
             "klient_id" => "Клиент",
             "projectname" => "Наименование",
