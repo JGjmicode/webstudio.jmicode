@@ -7,7 +7,10 @@ and open the template in the editor.
     Created on : 20.07.2016, 20:57:40
     Author     : jonick
 */
-
+@font-face {
+    font-family: Roboto;
+    src: url(/web/css/roboto-medium.ttf);
+}
 .header {
     
     background-color: #ddd;
@@ -23,7 +26,7 @@ and open the template in the editor.
     margin-top: 25px;
 }
 .container{
-    width: 960px;
+    width: 80%;
     padding-left: 10px;
     padding-right: 10px;
     margin: 0 auto;
@@ -231,6 +234,35 @@ time {
 }
 .avatar-field {
     display: none;
+}
+
+.table-main {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    font-family: Roboto;
+    font-size: 12px;
+}
+.table-main thead tr:first-child {
+    background: #2980b9;
+}
+.table-main thead tr th {
+    color: white;
+    font-weight: 300;
+}
+.table-main thead tr th a{
+    color: white;
+}
+.table-projects tbody tr:hover {
+    background: #dedede;
+    cursor: pointer;
+}
+.table-projects tbody tr td:nth-child(3) {
+    width: 6%;
+}
+.table-projects tbody tr td:nth-child(4) {
+    width: 6%;
+}
+.table-projects tbody tr td:nth-child(5) {
+    width: 6%;
 }
 
 
