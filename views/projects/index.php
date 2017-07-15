@@ -65,10 +65,11 @@ $this->title = 'Проекты';
 
                 }
             ],
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{view}',
-            ],
-        ]
+//            [
+//                'class' => 'yii\grid\ActionColumn',
+//                'template' => '{view}',
+//            ],
+        ],
+        'tableOptions' => ['class' => "table table-main table-projects"]
     ]);
 
