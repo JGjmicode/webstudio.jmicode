@@ -281,15 +281,20 @@ time {
 }
 .toolbar-button-round {
     padding: 0;
-    border :none;
+    background: transparent;
+    border-radius: 50%;
 }
 .toolbar-button-round:hover {
-    border :none;
-    background: transparent;
+    /*border :none;*/
 
 }
 .toolbar-button-round img:hover {
-    filter: grayscale(50%);
+    transition: all 0.5s ease;
+}
+.toolbar-button-round img:hover {
+    /*filter: grayscale(50%);*/
+    -webkit-filter: contrast(185%);
+
 }
 
 
