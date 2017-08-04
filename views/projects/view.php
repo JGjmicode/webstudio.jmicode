@@ -18,15 +18,71 @@ $this->title = 'Проект #'. $zakaz->id;
 
 
 <div class="container">
-
     <div class="col-md-6">
-        <h4>Проект # <?= $zakaz->id ?>  </h4>
-        <p><?php
-            if ($zakaz->status == 0)
-                echo "<span class='label label-success'>Активен</span>";
-            else
-                echo "<span class='label label-default'>Закрыт</span>";
-            ?> </p>
+    <h4>Проект # <?= $zakaz->id ?>  </h4>
+    <p><?php
+        if ($zakaz->status == 0)
+            echo "<span class='label label-success'>Активен</span>";
+        else
+            echo "<span class='label label-default'>Закрыт</span>";
+        ?> </p>
+    </div>
+    <div class="col-md-6">
+        <h4>Пользователи проекта</h4>
+        <?php
+        foreach ($zakaz->relatedUsers as $relatedUser){
+            echo "<span class='project-users'>";
+            echo $relatedUser->name;
+            echo Html::a('<span class="glyphicon glyphicon-remove remove-user"></span>', ['/projects/remove-related-user', 'zakaz_id' => $zakaz->id, 'user_id' => $relatedUser->id],
+                ['title' => Yii::t('yii', 'Удалить'), 'data-pjax' => '0']);
+            echo "</span>";
+        }
+        ?>
+
+    </div>
+    <div class="clearfix"></div>
+
+    <?= Html::beginTag("div", ["class" => "toolbar-panel"]) ?>
+        <?php if($zakaz->status == 0 && $editProject){?>
+            <?= Html::submitButton("<img src='/img/save.png' >", ["class" => "btn btn-default btn-left", "form" => "form-zakaz"]) ?>
+            <?= Html::button("<img src='/img/tickets.png' >", ["id" => "add-tiket", "class" => "btn btn-default btn-left"]) ?>
+            <?= Html::submitButton("<img src='/img/closed.png' >", ["class" => "btn btn-default btn-left", "form" => "close-project-form"]) ?>
+        <?php }?>
+
+            <?php
+            $url = Url::to(['/projects/get-users']);
+            $zakazRelateForm = ActiveForm::begin(['action' => '/projects/add-related-user', 'options' => ['class'=>'add-user-form']]);
+            ?>
+            <?=$zakazRelateForm->field($zakazRelate, 'zakaz_id')->hiddenInput(['value' => $zakaz->id])->label(false)?>
+            <?=$zakazRelateForm->field($zakazRelate, 'user_id')->widget(Select2::classname(), [
+                'initValueText' => 'asdasdasd', // set the initial display text
+                'options' => ['placeholder' => 'Найти пользователей ...'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'minimumInputLength' => 2,
+                    'language' => [
+                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                    ],
+                    'ajax' => [
+                        'url' => $url,
+                        'dataType' => 'json',
+                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                    ],
+                    //'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                    //'templateResult' => new JsExpression('function(city) { return city.text; }'),
+                    //'templateSelection' => new JsExpression('function (city) { return city.text; }'),
+                ],
+            ])->label(false)?>
+
+            <?= Html::submitButton("<img src='/img/user.png' >", ["class" => "btn btn-default btn-left"]) ?>
+            <?php
+            ActiveForm::end();
+            ?>
+
+    <?= Html::endTag("div") ?>
+
+    <!-- сведения о проекте -->
+    <div class="col-md-6">
 
         <?php $form = ActiveForm::begin([
             'id' => 'form-zakaz',
@@ -37,10 +93,10 @@ $this->title = 'Проект #'. $zakaz->id;
         ]); ?>
         <?php echo $form->field($zakaz, 'projectname')?>
         <div class="clearfix form-border">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 Заказчик
             </div>
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <?= yii\helpers\Html::a($zakaz->klient->name, yii\helpers\Url::to(['/client/view', "id"=>$zakaz->klient_id])); ?>
             </div>
         </div>
@@ -91,7 +147,81 @@ $this->title = 'Проект #'. $zakaz->id;
 
         <?php ActiveForm::end();?>
 
+        <!--   файлы -->
+        <?php
+        ActiveForm::begin([
+            'id' => 'close-project-form',
+            'action' => Url::to(['/projects/close']),
+        ]);?>
+        <?= Html::hiddenInput('zakaz_id', $zakaz->id) ?>
+        <?php ActiveForm::end() ?>
+
+        <div class="clearfix"></div>
+
+        <div class="files-panel-box">
+            <div class="panel panel-default">
+                <div class="panel-heading files-panel"><strong>Файлы</strong></div>
+                <div class="panel-body files-body">
+                    <table class="table-files">
+                        <tr>
+                            <th>Примечание</th>
+                            <th>Файл</th>
+                            <th>Х</th>
+                        </tr>
+                        <?php
+                        foreach ($zakaz->zakazfiles as $val){
+                            echo "<tr>";
+                            echo "<td>".$val->des."</td>";
+                            echo "<td>";
+                            echo Html::a(Html::img((FileTypesIcons::getIcon($val->type)) ? FileTypesIcons::getIcon($val->type) : '/img/icon-files/Default.png' ,['alt' => $val->name,'width' => '24px']), $val->path, ['target' => '_blanc']);
+                            echo "</td>";
+                            echo "<td>X</td>";
+                            echo "</tr>";
+                        }
+                        ?>
+                    </table>
+                </div>
+            </div>
+            <?php if($zakaz->status == 0 && $editProject){?>
+                <!-- Скрыть форму добавления файлов если проект закрыт-->
+                <div class="upload-files">
+                    <?php $uploadForm = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
+                    <?= $uploadForm->field($zakazFiles, 'uploadFile')->fileInput() ?>
+                    <?= $uploadForm->field($zakazFiles, 'des', ['inputOptions' => ['id' => 'file-des', 'class' => 'form-control col-md-3']]) ?>
+                    <?= Html::submitButton('Загрузить', ["class" => "btn btn-default btn-left"]) ?>
+                    <?php ActiveForm::end() ?>
+                </div>
+            <?php }?>
+
+            <p><b>Оплаты</b><p>
+            <table class="table table-striped" id="paytable">
+                <tr>
+                    <th>#</th>
+                    <th>Сумма, руб.</th>
+                    <th>Дата</th>
+                    <th>Примечание</th>
+                </tr>
+                <?php
+                foreach ($zakaz->oplata as $val): ?>
+                    <tr>
+                        <td><?= $val->id ?></td>
+                        <td><?= $val->oplata ?></td>
+                        <td><?= $val->date_opl ?></td>
+                        <td><?= $val->prim ?></td>
+                    </tr>
+
+                <?php endforeach; ?>
+            </table>
+            <div>Остаток: <span class="rest">0</span> руб.</div>
+            <?php if($zakaz->status == 0 && $editProject){?>
+                <!-- Скрыть кнопку добавления оплаты если проект закрыт-->
+                <?= Html::button('Оплата', ["id"=>"btn-pay", "class" => "btn btn-default btn-right"]) ?>
+            <?php }?>
+        </div>
+
+
     </div>
+<!--  список тикеты -->
     <div class="col-md-6">
         <div id="tikets">
             <h4><a href="<?= Url::to(['/tikets/index', 'TiketSearch[zakaz.projectname]' => $zakaz->projectname])?>">Тикеты <span class="badge"><?= count($zakaz->tiket) ?></span></a></h4>
@@ -108,140 +238,39 @@ $this->title = 'Проект #'. $zakaz->id;
                 ?>
             </div>
         </div>
-        <div id="related-user">
-            <h4>Пользователи проекта</h4>
-            <div class="col-md-6">
-                <table>
-                    <tr>
-                        <th class="related-user-name">Имя</th>
-                        <th class="related-user-delete">Удалить</th>
-                    </tr>
-                <?php
-                    foreach ($zakaz->relatedUsers as $relatedUser){
-                        echo '<tr>';
-                        echo '<td class="related-user-name">';
-                        echo $relatedUser->name;
-                        echo '</td>';
-                        echo '<td class="related-user-delete">';
-                        echo Html::a('<span class=" glyphicon glyphicon-remove"></span>', ['/projects/remove-related-user', 'zakaz_id' => $zakaz->id, 'user_id' => $relatedUser->id],
-                        ['title' => Yii::t('yii', 'Удалить'), 'data-pjax' => '0']);
 
-                        echo '</td>';
-                        echo '</tr>';
-                    }
-                ?>
-                </table>    
-            </div>
-            <div class="col-md-6">
-                <?php
-                $url = Url::to(['/projects/get-users']);
-                    $zakazRelateForm = ActiveForm::begin(['action' => '/projects/add-related-user']);
-                ?>
-                <?=$zakazRelateForm->field($zakazRelate, 'zakaz_id')->hiddenInput(['value' => $zakaz->id])->label(false)?>
-                <?=$zakazRelateForm->field($zakazRelate, 'user_id')->widget(Select2::classname(), [
-                    'initValueText' => 'asdasdasd', // set the initial display text
-                    'options' => ['placeholder' => 'Найти пользователей ...'],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                        'minimumInputLength' => 2,
-                        'language' => [
-                            'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                        ],
-                        'ajax' => [
-                            'url' => $url,
-                            'dataType' => 'json',
-                            'data' => new JsExpression('function(params) { return {q:params.term}; }')
-                        ],
-                        //'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                        //'templateResult' => new JsExpression('function(city) { return city.text; }'),
-                        //'templateSelection' => new JsExpression('function (city) { return city.text; }'),
-                    ],
-                ])->label(false)?>
-                <?= Html::submitButton('Добавить', ["class" => "btn btn-default btn-left"]) ?>
-                <?php
-                    ActiveForm::end();
-                ?>
-            </div>
-        </div>
-    </div>
-    <?php
-    ActiveForm::begin([
-        'id' => 'close-project-form',
-        'action' => Url::to(['/projects/close']),
-    ]);?>
-    <?= Html::hiddenInput('zakaz_id', $zakaz->id) ?>
-    <?php ActiveForm::end() ?>
-    <?php if($zakaz->status == 0 && $editProject){?>
-        <!-- Скрыть кнопки если проект закрыт-->
-        <div class="col-md-12">
-            <?= Html::submitButton('Закрыть проект', ["class" => "btn btn-success btn-left", "form" => "close-project-form"]) ?>
-            <?= Html::submitButton('Сохранить', ["class" => "btn btn-default btn-left", "form" => "form-zakaz"]) ?>
-            <?= Html::button('Добавить тикет', ["id" => "add-tiket", "class" => "btn btn-default btn-left"]) ?>
-        </div>
-    <?php }?>
-    <div class="clearfix"></div>
-    <div class="col-md-6 files-panel-box">
-        <div class="panel panel-default">
-            <div class="panel-heading files-panel">Файлы</div>
-            <div class="panel-body files-body">
-                <table class="table-files">
-                    <tr>
-                        <th>Примечание</th>
-                        <th>Файл</th>
-                        <th>Х</th>
-                    </tr>
-                    <?php
-                    foreach ($zakaz->zakazfiles as $val){
-                        echo "<tr>";
-                        echo "<td>".$val->des."</td>";
-                        echo "<td>";
-                        echo Html::a(Html::img((FileTypesIcons::getIcon($val->type)) ? FileTypesIcons::getIcon($val->type) : '/img/icon-files/Default.png' ,['alt' => $val->name,'width' => '35px']), $val->path, ['target' => '_blanc']);
-                        echo "</td>";
-                        echo "<td>X</td>";
-                        echo "</tr>";
-                    }
-                    ?>
-                </table>
-            </div>
-        </div>
-        <?php if($zakaz->status == 0 && $editProject){?>
-            <!-- Скрыть форму добавления файлов если проект закрыт-->
-            <div class="upload-files">
-                <?php $uploadForm = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
-                <?= $uploadForm->field($zakazFiles, 'des', ['inputOptions' => ['id' => 'file-des', 'class' => 'form-control col-md-3']]) ?>
-                <?= $uploadForm->field($zakazFiles, 'uploadFile')->fileInput() ?>
-                <?= Html::submitButton('Загрузить', ["class" => "btn btn-default btn-left"]) ?>
-                <?php ActiveForm::end() ?>
-            </div>
-        <?php }?>
+<!--        <div id="related-user">-->
+<!--            <h4>Пользователи проекта</h4>-->
+<!--            <div class="col-md-6">-->
+<!--                <table>-->
+<!--                    <tr>-->
+<!--                        <th class="related-user-name">Имя</th>-->
+<!--                        <th class="related-user-delete">Удалить</th>-->
+<!--                    </tr>-->
+<!--                --><?php
+//                    foreach ($zakaz->relatedUsers as $relatedUser){
+//                        echo '<tr>';
+//                        echo '<td class="related-user-name">';
+//                        echo $relatedUser->name;
+//                        echo '</td>';
+//                        echo '<td class="related-user-delete">';
+//                        echo Html::a('<span class=" glyphicon glyphicon-remove"></span>', ['/projects/remove-related-user', 'zakaz_id' => $zakaz->id, 'user_id' => $relatedUser->id],
+//                        ['title' => Yii::t('yii', 'Удалить'), 'data-pjax' => '0']);
+//
+//                        echo '</td>';
+//                        echo '</tr>';
+//                    }
+//                ?>
+<!--                </table>    -->
+<!--            </div>-->
+<!--            -->
+<!--        </div>-->
     </div>
 
-    <div class="col-md-6">
-        <p><b>Оплаты</b><p>
-        <table class="table table-striped" id="paytable">
-            <tr>
-                <th>#</th>
-                <th>Сумма, руб.</th>
-                <th>Дата</th>
-                <th>Примечание</th>
-            </tr>
-            <?php
-            foreach ($zakaz->oplata as $val): ?>
-                <tr>
-                    <td><?= $val->id ?></td>
-                    <td><?= $val->oplata ?></td>
-                    <td><?= $val->date_opl ?></td>
-                    <td><?= $val->prim ?></td>
-                </tr>
 
-            <?php endforeach; ?>
-        </table>
-        <div>Остаток: <span class="rest">0</span> руб.</div>
-        <?php if($zakaz->status == 0 && $editProject){?>
-            <!-- Скрыть кнопку добавления оплаты если проект закрыт-->
-            <?= Html::button('Оплата', ["id"=>"btn-pay", "class" => "btn btn-default btn-right"]) ?>
-        <?php }?>
-    </div>
+
+
+
 
     <div class="popup-input-window popup-pay">
         <div class="panel panel-default">

@@ -16,9 +16,11 @@ $authManager = \Yii::$app->getAuthManager();
 ?>
 
 
-    <h2 align="center">Список задач</h2>
-<?= Html::a('Очистить фильтры', ['index'], ['class' => 'btn btn-info']) ?>
-<?= Html::button('Добавить тикет', ["id" => "add-tiket", "class" => "btn btn-default btn-left"]) ?>
+<h2 align="center">Список задач</h2>
+<?= Html::beginTag("div", ["class" => "toolbar-panel"]) ?>
+    <?= Html::a("<img src='/img/add.png' >", ["#"],["id" => "add-tiket", "class" => "btn btn-default btn-left"]) ?>
+    <?= Html::a("<img src='/img/delete.png' >", ['index'], ['class' => 'btn btn-default btn-left']) ?>
+<?= Html::endTag("div") ?>
 <?php
 
 echo GridView::widget([
@@ -96,19 +98,20 @@ echo GridView::widget([
             'format'=>'raw', // Возможные варианты: raw, html
             'content'=>function($data){
                 if(!$data->active) {
-                    return Html::img('/img/done.png', ['style' => 'width:25px;']);
+                    return Html::img('/img/done.png', ['style' => 'width:16px;']);
 
                 }else{
-                    return Html::img('/img/fail.png', ['style' => 'width:25px;']);
+                    return Html::img('/img/fail.png', ['style' => 'width:16px;']);
                 }
             },
             'filter' => array("1"=>"Открыт","0"=>"Закрыт"),
         ],
-        [
-            'class' => 'yii\grid\ActionColumn',
-            'template' => '{view}',
-        ],
-    ]
+//        [
+//            'class' => 'yii\grid\ActionColumn',
+//            'template' => '{view}',
+//        ],
+    ],
+    'tableOptions' => ['class' => "table table-main table-tickets"]
 ]);
 ?>
 

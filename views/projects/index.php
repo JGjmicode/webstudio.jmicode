@@ -10,7 +10,7 @@ $this->title = 'Проекты';
 
 <h2 align="center">Список проектов</h2>
 <?= Html::beginTag("div", ["class" => "toolbar-panel"]) ?>
-    <?= Html::a("<img src='/img/plus.png' >", ['/projects/add'], ["class" => "btn btn-default btn-left toolbar-button-round"]) ?>
+    <?= Html::a("<img src='/img/add.png' >", ['/projects/add'], ["class" => "btn btn-default btn-left"]) ?>
 <!--    --><?//= Html::a('Очистить фильтры', ['index'], ['class' => 'btn btn-info']) ?>
 <?= Html::endTag("div") ?>
 

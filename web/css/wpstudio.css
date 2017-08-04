@@ -138,11 +138,11 @@ time {
     display: block;
 }
 #dog {    
-    width: 25%;
+    width: 20%;
     display: inline;
 }
-[name=date_dog] {
-    width: 67%;
+[name=Zakaz\[date_dog\]] {
+    width: 74%;
     display: inline;
 }
 .tiket-avatar {
@@ -252,8 +252,13 @@ time {
     color: white;
 }
 .table-projects tbody tr:hover {
-    background: #dedede;
+    /*background: #dedede;*/
+    color: #2e6da4;
     cursor: pointer;
+}
+.table-tickets tbody tr:hover {
+    cursor: pointer;
+    color: #2e6da4;
 }
 .table-projects tbody tr td:nth-child(1) {
     width: 2%;
@@ -272,6 +277,24 @@ time {
     text-align: center;
     width: 2%;
 }
+.table-tickets tbody tr td:nth-child(3) {
+    width: 20%;
+    text-align: left;
+}
+.table-tickets tbody tr td:nth-child(4) {
+    width: 6%;
+}
+.table-tickets tbody tr td:nth-child(5) {
+    width: 6%;
+}
+.table-tickets tbody tr td:nth-child(6) {
+    width: 6%;
+}
+.table-tickets tbody tr td:nth-child(10) {
+    width: 2%;
+    text-align: center;
+}
+
 
 .toolbar-panel {
     margin-bottom: 20px;
@@ -294,7 +317,37 @@ time {
 .toolbar-button-round img:hover {
     /*filter: grayscale(50%);*/
     -webkit-filter: contrast(185%);
-
+}
+.form-group {
+    margin-bottom: 2px;
+}
+.form-border {
+    border-top: none;
 }
 
+#form-zakaz {
+    border: 1px solid #666666;
+    background: #cccccc;
+}
+.remove-user {
+    padding-left: 4px;
+}
+.project-users {
+    padding: 4px 10px;
+    border: 1px solid #666666;
+    border-radius: 4px;
+    background: papayawhip;
+    margin-right: 5px;
+}
+.field-zakazrelate-zakaz_id {
+    float: left;
+}
+.field-zakazrelate-user_id {
+    float: left;
+    margin-right: 10px;
+    padding-top: 2px;
+}
+.add-user-form {
+    float: right;
+}
 
