@@ -6,20 +6,23 @@ $this->title = 'Список клиентов';
 ?>
 <h2 class="h-title">Список клиентов</h2>
 <div class="container">
-    <div class="toolbar clearfix">
-        <?= Html::a("Добавить", \yii\helpers\Url::to(["client/add"]), ["class" => "btn btn-success btn-right"]); ?>
-    </div>
-    <table class="table table-striped table-client">
+    <?= Html::beginTag("div", ["class" => "toolbar-panel"]) ?>
+        <?= Html::a("<img src='/img/add.png' >", \yii\helpers\Url::to(["client/add"]), ["class" => "btn btn-default"]); ?>
+    <?= Html::endTag("div") ?>
+
+    <table class="table table-main table-client">
+        <thead>
         <tr>
             <th>#</th>
             <th>Наименование</th>
             <th>Примечание</th>
             <th>Просмотр</th>
         </tr>
-        
+        </thead>
+        <tbody>
     <?php foreach ($clients as $client): ?>
-        <tr>
-            <td><?= $client->id ?></td>
+        <tr data-key="<?= $client->id ?>">
+            <td ><?= $client->id ?></td>
             <td><?= $client->name ?></td>
             <td><?= $client->prim ?></td>
             <td>
@@ -27,6 +30,7 @@ $this->title = 'Список клиентов';
 
             </td>
         </tr>
+        </tbody>
     <?php endforeach; ?>        
     </table>
 </div>

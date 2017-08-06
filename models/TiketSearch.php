@@ -26,7 +26,7 @@ class TiketSearch extends Tiket{
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 10,
+                'pageSize' => 25,
             ]
         ]);
 

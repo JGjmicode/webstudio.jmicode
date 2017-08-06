@@ -8,10 +8,17 @@ $url_contact = Url::to(['/client/get-contact']);
 <div class="container">
 
     <h2 class="h-title">Карточка клиента <?=$client->name?></h2>
+
+    <?= Html::beginTag("div", ["class" => "toolbar-panel"]) ?>
+    <?php
+    $clientForm = ActiveForm::begin();
+    ?>
+        <?= Html::submitButton("<img src='/img/save.png' >", ["class" => "btn btn-default"]) ?>
+        <?= Html::button("<img src='/img/contacts.png' >", ["id" => "add-contact", "class" => "btn btn-default"]); ?>
+    <?= Html::endTag("div") ?>
+
     <div class="col-md-6">
-        <?php
-            $clientForm = ActiveForm::begin();
-        ?>
+
         <table class="table">
             <tr class="tbl-colored">
                 <td>ID</td>
@@ -19,6 +26,9 @@ $url_contact = Url::to(['/client/get-contact']);
             </tr><tr>
                 <td>Наименование</td>
                 <td><?=$clientForm->field($client, 'name')->label(false) ; ?></td>
+            </tr><tr>
+                <td>Примечание</td>
+                <td><?=$clientForm->field($client, 'prim')->textarea()->label(false) ; ?></td>
             </tr>
         </table>
     </div>
@@ -28,7 +38,7 @@ $url_contact = Url::to(['/client/get-contact']);
         <div class="list-group">
             <?php
             foreach ($client->zakaz as $zakaz):
-                echo Html::a($zakaz->projectname, \yii\helpers\Url::to(["site/ezakaz", "id"=>$zakaz->id]), ["class"=>"list-group-item"]);
+                echo Html::a($zakaz->projectname, \yii\helpers\Url::to(["projects/view", "id"=>$zakaz->id]), ["class"=>"list-group-item"]);
             endforeach;
             ?>
         </div>
@@ -44,7 +54,7 @@ $url_contact = Url::to(['/client/get-contact']);
                 <th>e-mail</th>
                 <th>Skype</th>
                 <th>Примечание</th>
-                <th>Изменить</th>
+<!--                <th>Изменить</th>-->
                 <th>Удалить</th>
             </tr>
             <?php
@@ -56,20 +66,20 @@ $url_contact = Url::to(['/client/get-contact']);
                 echo "<td>".$kontakt->email."</td>";
                 echo "<td>".$kontakt->skype."</td>";
                 echo "<td>".$kontakt->prim."</td>";
-                echo "<td>".Html::button('Изменить', ['id' => 'edit-contact', 'contact-id' => $kontakt->id, "class" => "btn btn-default btn-xs"])."</td>";
+//                echo "<td>".Html::button('Изменить', ['id' => 'edit-contact', 'contact-id' => $kontakt->id, "class" => "btn btn-default btn-xs"])."</td>";
                 echo "<td>".Html::a('Удалить', Url::to(['/client/delete-contact', 'contact_id' => $kontakt->id, 'client_id' => $client->id]), ["class" => "btn btn-danger btn-xs"])."</td>";
                 echo "</tr>";
             endforeach;
             ?>
         </table>
     </div>
-    <div class="col-md-12">
-        <?= Html::button('Добавить контакт', ["id" => "add-contact", "class" => "btn btn-default btn-right"]); ?>
-        <?= Html::submitButton('Сохранить', ["class" => "btn btn-default btn-right"]) ?>
-    </div>
-    <div class="col-md-12">
-        <?=$clientForm->field($client, 'prim')->textarea()->label(false) ; ?>
-    </div>
+<!--    <div class="col-md-12">-->
+<!--        -->
+<!---->
+<!--    </div>-->
+<!--    <div class="col-md-12">-->
+
+<!--    </div>-->
     <?php
          ActiveForm::end();
     ?>

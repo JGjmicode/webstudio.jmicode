@@ -229,10 +229,10 @@ $this->title = 'Проект #'. $zakaz->id;
                 <?php
                 foreach ($zakaz->tiket as $val):
                     if(!$val->active){
-                        $tiketClose =  "<img class='tiket-avatar' src='/img/done.png'></img> <time>".date_format(DateTime::createFromFormat("Y-m-d", $val->date_close), "d-m-Y")."</time>";
+                        $tiketClose =  "<img class='tiket-done' src='/img/done.png'></img> <time>[".date_format(DateTime::createFromFormat("Y-m-d", $val->date_close), "d-m-Y")."]</time>";
                     }else $tiketClose = '';
                     echo Html::a("<img class='tiket-avatar' src='/".app\models\User::findIdentity($val->user_id)['avatar']."'></img> "
-                        .$val->task_name." <time>".date_format(DateTime::createFromFormat("Y-m-d", $val->date_add), "d-m-Y")."</time>".$tiketClose,
+                        .$val->task_name." <time>[".date_format(DateTime::createFromFormat("Y-m-d", $val->date_add), "d-m-Y")."]</time> ".$tiketClose,
                         \yii\helpers\Url::to(["tikets/view", "id"=>$val->id]), ["class"=>'list-group-item']);
                 endforeach;
                 ?>

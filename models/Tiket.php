@@ -125,7 +125,7 @@ class Tiket extends \yii\db\ActiveRecord{
                 $messages[] = Yii::$app->mailer->compose('close-tiket-message', [
                     'id' => $this->id,
                 ])
-                    ->setSubject('Тикету № ' . $this->id . ' закрыт.')
+                    ->setSubject('Тикет № ' . $this->id . ' закрыт.')
                     ->setTo($user->e_mail);
 
             }
